@@ -1,0 +1,34 @@
+{
+  "name": "nnpmm",
+  "description": "",
+  "version": "1.0.1",
+  "scripts": {
+    "dev": "tsc -w",
+    "build": "tsc",
+    "mn": "node bin build"
+  },
+  "preferGlobal": true,
+  "type": "commonjs",
+  "dependencies": {
+    "node-ls-files": "^0.0.3",
+    "shelljs": "^0.8.5"
+  },
+  "devDependencies": {
+    "typescript": "^4.8.4",
+    "@types/node": "^18.11.9"
+  },
+  "main": "./bin/index.js",
+  "bin": {
+    "nnpmm": "./bin/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NazmusSayad/make-npm.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NazmusSayad/make-npm/issues"
+  },
+  "homepage": "https://github.com/NazmusSayad/make-npm#readme"
+}
