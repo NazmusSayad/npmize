@@ -1,12 +1,8 @@
-import fs from 'fs'
-import path from 'path'
 import shell from 'shelljs'
+import { getPackageData } from '../utils/utils.js'
 
 export default (targetDeps: string[]) => {
-  const pkgPath = path.resolve('./package.json')
-  if (!fs.existsSync(pkgPath)) return false
-
-  const pkgData = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))
+  const pkgData = getPackageData()
 
   const result = {}
   targetDeps.forEach((dep) => {

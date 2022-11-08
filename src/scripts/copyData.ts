@@ -13,7 +13,7 @@ export default (...targets) => {
 
     lines.forEach((line) => {
       if (fileLines.includes(line)) return
-      fs.appendFileSync(path, '\n' + line + '\n')
+      fs.appendFileSync(path, '\n' + line)
     })
   })
 }

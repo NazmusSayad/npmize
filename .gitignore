@@ -81,8 +81,6 @@ typings/
 # Nuxt.js build / generate output
 .nuxt
 dist
-dist-cjs
-dist-mjs
 
 # Gatsby files
 .cache/
@@ -106,3 +104,6 @@ dist-mjs
 .tern-port
 
 bin/
+
+dist-cjs
+dist-mjs

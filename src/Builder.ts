@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import shell from 'shelljs'
 import lsFiles from 'node-ls-files'
+import { writeJOSN } from './utils/utils.js'
 
 class Builder {
   #libDir = path.join(__dirname, '../lib')
@@ -54,7 +55,7 @@ class Builder {
 
     userMjsTsConf.extends = path.join(this.#libDir, fileName)
 
-    fs.writeFileSync(userTsconfPath, JSON.stringify(userMjsTsConf, null, '\t'))
+    writeJOSN(userTsconfPath, userMjsTsConf)
     return fileName
   }
 
@@ -80,14 +81,24 @@ class Builder {
   }
 
   #prependNodeCode(file: string): void {
-    const data = fs.readFileSync(file, 'utf-8')
+    let data = fs.readFileSync(file, 'utf-8')
+    const dirNameRegex = /('|")use __dirname('|");?/gm
+    const fileNameRegex = /('|")use __filename('|");?/gm
+    const isUsingAnything = dirNameRegex.test(data) || fileNameRegex.test(data)
+    if (!isUsingAnything) return
 
-    if (data.includes('__filename') || data.includes('__dirname')) {
-      fs.writeFileSync(file, this.#__nodeCode + data)
-    }
+    fs.writeFileSync(
+      file,
+      this.#__nodeCode +
+        data
+          .replace(dirNameRegex, this.#__nodeCode__dirname)
+          .replace(fileNameRegex, this.#__nodeCode__filename)
+    )
   }
 
-  #__nodeCode = `import{fileURLToPath as ______fIlE___UrL___tO___pATh______}from'url';let __filename=______fIlE___UrL___tO___pATh______(import.meta.url);let __dirname=______fIlE___UrL___tO___pATh______(new URL('.',import.meta.url));\n`
+  #__nodeCode = `import{fileURLToPath as ______fIlE___UrL___tO___pATh______}from'url';`
+  #__nodeCode__filename = `let __filename=______fIlE___UrL___tO___pATh______(import.meta.url);`
+  #__nodeCode__dirname = `let __dirname=______fIlE___UrL___tO___pATh______(new URL('.',import.meta.url));`
 }
 
 export default Builder
