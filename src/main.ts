@@ -1,4 +1,3 @@
-console.clear()
 import argv from './argv.js'
 import Builder from './Builder.js'
 import initPkgJSON from './scripts/initPkgJSON.js'
@@ -27,9 +26,9 @@ switch (argv.cmd) {
 
   case '':
     console.log('No command found')
-    break
+    process.exit(1)
 
   default:
     console.log('Unknown command')
-    break
+    process.exit(1)
 }

@@ -14,7 +14,8 @@ const checkPackageManager = (
   const pnpmRef = fs.existsSync(pnpm)
 
   if (+npmRef + +pnpmRef + +yarnRef > 1) {
-    throw new Error('Unable to get package manager.')
+    console.log('Unable to get package manager.')
+    process.exit(1)
   }
 
   return npmRef ? 'npm' : yarnRef ? 'yarn' : pnpmRef ? 'pnpm' : false
@@ -43,26 +44,31 @@ export const installDevPackage = (pkm, ...packageNames: string[]): void => {
   shell.exec(`${pkm} ${installCmd} -D ${packageNames.join(' ')}`)
 }
 
-export const isDepsInstalled = (targetDeps: string[]) => {
+export const getMissingPkgs = (targetDeps: string[]) => {
   const pkgData = getPackageData()
+  const result: string[] = []
 
-  const result = {}
-  targetDeps.forEach((dep) => {
-    result[dep] = Boolean(
-      pkgData.dependencies[dep] || pkgData.devDependencies[dep]
-    )
-  })
+  const isNpmEzLocal = Boolean(
+    (pkgData.dependencies && pkgData.dependencies['npm-ez']) ||
+      (pkgData.devDependencies && pkgData.devDependencies['npm-ez'])
+  )
+
+  if (isNpmEzLocal) {
+    targetDeps.forEach((dep) => {
+      const installed = Boolean(
+        (pkgData.dependencies && pkgData.dependencies[dep]) ||
+          (pkgData.devDependencies && pkgData.devDependencies[dep])
+      )
+
+      installed || result.push(dep)
+    })
+  }
 
   return result
 }
 
 export default (): void => {
-  const depsStatus = isDepsInstalled(requiredPackages)
+  const missingPkgs = getMissingPkgs(requiredPackages)
   const pkm = getPkgManager()
-
-  if (depsStatus) {
-    for (let key in depsStatus) depsStatus[key] || installDevPackage(pkm, key)
-  } else {
-    installDevPackage(pkm, ...requiredPackages)
-  }
+  installDevPackage(pkm, ...missingPkgs)
 }

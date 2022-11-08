@@ -33,33 +33,29 @@ pnpm add -D npm-ez
 ```
 
 <br/>
+<br/>
 
-## Command Line Interface
+# Command Line Interface
 
 The interface for command-line usage is fairly simplistic at this stage, as seen in the following usage section.
 
 ## Usage
 
 ```shell
-npm-ez <command> [options]
-```
-
-```sh
 npx npm-ez <command> [options]
 ```
 
 ### Example:
 
 ```shell
-npm-ez dev
-```
-
-```shell
 npx npm-ez dev
 ```
 
+**Warning:** If you would like to use it as globaly you need to install `typescript` & `@types/node` globally.
+
 _This starts typescript watch mode._
 
+<br/>
 <br/>
 
 ## Commands
@@ -89,6 +85,7 @@ _This starts typescript watch mode._
 | --bin      | Also add `bin` field                                                  |
 | --only-bin | Use `bin` files for `main` and `types` and do not add `exports` field |
 
+<br/>
 <br/>
 
 ## `__dirname` & `__filename`
