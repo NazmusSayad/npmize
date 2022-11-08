@@ -71,11 +71,10 @@ class Builder {
 
   #addPackageData(dir: string, type: 'cjs' | 'mjs'): void {
     const content = {
-      type,
+      type: type === 'cjs' ? 'commonjs' : 'module',
     }
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true })
-    }
+
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
     const target = path.join(dir, './package.json')
     fs.writeFileSync(target, JSON.stringify(content))
   }

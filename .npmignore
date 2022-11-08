@@ -1,5 +1,11 @@
+*!bin/**!lib/**!package.json!README.md*
+
 *
+
 !bin/**
+
 !lib/**
+
 !package.json
+
 !README.md

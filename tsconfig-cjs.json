@@ -1,6 +1,0 @@
-{
-	"include": [
-		"src"
-	],
-	"extends": "/workspaces/make-npm/lib/tsconfig-cjs.json"
-}

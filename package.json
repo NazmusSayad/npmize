@@ -1,11 +1,11 @@
 {
-  "name": "nnpmm",
+  "name": "npm-ez",
   "description": "",
-  "version": "1.0.1",
+  "version": "0.0.1",
   "scripts": {
     "dev": "tsc -w",
     "build": "tsc",
-    "mn": "node bin build"
+    "test": "node bin"
   },
   "preferGlobal": true,
   "type": "commonjs",
@@ -14,21 +14,21 @@
     "shelljs": "^0.8.5"
   },
   "devDependencies": {
-    "typescript": "^4.8.4",
-    "@types/node": "^18.11.9"
+    "@types/node": "^18.11.9",
+    "typescript": "^4.8.4"
   },
   "main": "./bin/index.js",
   "bin": {
-    "nnpmm": "./bin/index.js"
+    "npm-ez": "./bin/index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NazmusSayad/make-npm.git"
+    "url": "git+https://github.com/NazmusSayad/npm-is-easy-now.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/NazmusSayad/make-npm/issues"
+    "url": "https://github.com/NazmusSayad/npm-is-easy-now/issues"
   },
-  "homepage": "https://github.com/NazmusSayad/make-npm#readme"
+  "homepage": "https://github.com/NazmusSayad/npm-is-easy-now#readme"
 }
