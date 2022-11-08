@@ -107,3 +107,5 @@ bin/
 
 dist-cjs
 dist-mjs
+tsconfig-cjs.json
+tsconfig-mjs.json
