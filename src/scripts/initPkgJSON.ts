@@ -1,9 +1,14 @@
+import argv from '../argv.js'
 import { getPackageData, getPackagePath, writeJOSN } from '../utils/utils.js'
 
-export default () => {
+export default (): void => {
   const pkgData = getPackageData()
-  const isOnlyBinMode = process.argv[3] === 'bin'
-  const addBin = isOnlyBinMode || process.argv[3] === '--bin'
+  const isOnlyBinMode = argv.flag['only-bin']
+  const addBin = isOnlyBinMode || argv.flag['bin']
+
+  pkgData.scripts ||= {}
+  pkgData.dev = 'npm-ez dev'
+  pkgData.build = 'npm-ez build'
 
   if (addBin) {
     pkgData.bin = {

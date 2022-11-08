@@ -1,7 +1,7 @@
 {
   "name": "npm-ez",
   "description": "",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "./bin/index.js",
   "types": "./bin/index.d.js",
   "bin": {
@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "tsc -w",
     "build": "tsc",
-    "test": "node bin"
+    "test": "node bin --no-src --no-ignore build"
   },
   "preferGlobal": true,
   "type": "commonjs",

@@ -2,82 +2,59 @@ import fs from 'fs'
 import path from 'path'
 import shell from 'shelljs'
 import lsFiles from 'node-ls-files'
-import { writeJOSN } from './utils/utils.js'
+import { readJOSN, writeJOSN, cleanDir } from './utils/utils.js'
 
 class Builder {
   #libDir = path.join(__dirname, '../lib')
+  #rootDir = path.resolve('./src')
+  #tempTSConfig = path.join(this.#libDir, './tsconfig.json')
 
   dev(): void {
+    this.#getTSConfig()
     this.#runCmd('cjs', {
       watch: true,
     })
   }
 
   build(): void {
+    this.#getTSConfig()
     this.#runCmd('cjs')
 
     const outputDir = this.#runCmd('mjs')
     const files = lsFiles.sync(outputDir, {
       filter: /\.m?js$/,
     })
+
     files.forEach((file) => this.#prependNodeCode(file))
+    this.#removeTSConfig()
   }
 
   #runCmd(type: 'cjs' | 'mjs', { watch = false } = {}): string {
-    const outputDir = path.resolve(`./dist-${type}`)
-    this.#cleanDir(outputDir)
-    this.#addPackageData(outputDir, type)
+    const outDir = path.resolve(`./dist-${type}`)
+    const tscFile = path.join(this.#libDir, `./tsconfig-${type}.json`)
 
-    const projectPath = this.#createTSConfig(type)
-    const cmdStr = `tsc -p ${projectPath} --rootDir src --baseUrl src --outDir dist-${type}${
-      watch ? ' -w' : ''
-    }`
+    const options = [
+      `--project ${tscFile}`,
+      `--rootDir ${this.#rootDir}`,
+      `--baseUrl ${this.#rootDir}`,
+      `--outDir ${outDir}`,
+      watch && ' -w',
+    ]
 
-    shell.exec(cmdStr, { async: watch })
-    return outputDir
+    cleanDir(outDir)
+    this.#addPackageData(outDir, type === 'cjs' ? 'commonjs' : 'module')
+
+    const optimizeOptions = options.filter((o) => o).join(' ')
+    shell.exec('tsc ' + optimizeOptions, { async: watch })
+
+    return outDir
   }
 
-  #createTSConfig(type: 'cjs' | 'mjs'): string {
-    const fileName = `./tsconfig-${type}.json`
-    const userTsconfPath = path.resolve(fileName)
+  #addPackageData(outDir: string, type: 'commonjs' | 'module'): void {
+    if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true })
 
-    let userMjsTsConf: any = {}
-    if (fs.existsSync(userTsconfPath)) {
-      try {
-        userMjsTsConf = JSON.parse(fs.readFileSync(userTsconfPath, 'utf-8'))
-      } catch {}
-    }
-
-    if (!userMjsTsConf.include) userMjsTsConf.include = ['src']
-    else if (!userMjsTsConf.include.includes('src')) {
-      userMjsTsConf.include.unshift('src')
-    }
-
-    userMjsTsConf.extends = path.join(this.#libDir, fileName)
-
-    writeJOSN(userTsconfPath, userMjsTsConf)
-    return fileName
-  }
-
-  #cleanDir(dir: string): void {
-    if (!fs.existsSync(dir)) return
-    const list = fs.readdirSync(dir)
-    list.forEach((item) => {
-      fs.rmSync(path.join(dir, item), {
-        recursive: true,
-        force: true,
-      })
-    })
-  }
-
-  #addPackageData(dir: string, type: 'cjs' | 'mjs'): void {
-    const content = {
-      type: type === 'cjs' ? 'commonjs' : 'module',
-    }
-
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
-    const target = path.join(dir, './package.json')
-    fs.writeFileSync(target, JSON.stringify(content))
+    const target = path.join(outDir, './package.json')
+    writeJOSN(target, { type })
   }
 
   #prependNodeCode(file: string): void {
@@ -94,6 +71,23 @@ class Builder {
           .replace(dirNameRegex, this.#__nodeCode__dirname)
           .replace(fileNameRegex, this.#__nodeCode__filename)
     )
+  }
+
+  #getTSConfig() {
+    const userTscPath = path.resolve('./tsconfig.json')
+
+    const userTsc = readJOSN(userTscPath)
+    const libTsc = readJOSN(this.#tempTSConfig)
+
+    libTsc.extends = './tsconfig-core.json'
+    libTsc.include = [this.#rootDir]
+    libTsc.compilerOptions = userTsc.compilerOptions
+
+    writeJOSN(this.#tempTSConfig, libTsc)
+  }
+
+  #removeTSConfig() {
+    fs.rmSync(this.#tempTSConfig)
   }
 
   #__nodeCode = `import{fileURLToPath as ______fIlE___UrL___tO___pATh______}from'url';`

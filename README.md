@@ -64,22 +64,32 @@ _This starts typescript watch mode._
 
 ## Commands
 
-| Command      | Description |
-| ------------ | ----------- |
-| init         | Title       |
-| build        | Title       |
-| dev \| start | Text        |
+| Command | Description                   |
+| ------- | ----------------------------- |
+| init    | Initilize `package.json`      |
+| dev     | Start `typescript` watch mode |
+| build   | Build for prod                |
 
 <br/>
 
 ## Command Options
 
+### Global:
+
+| Option       | Description                                                   |
+| ------------ | ------------------------------------------------------------- |
+| --no-install | Not to install required dependencies automatically            |
+| --no-ignore  | Not to add recommended ignore files to gitignore \| npmignore |
+| --no-src     | Not to create src/index.ts folder when not exists             |
+
 ### Command: `init`
 
-| Option | Description |
-| ------ | ----------- |
-| bin    | Title       |
-| --bin  | Title       |
+| Option     | Description                                                           |
+| ---------- | --------------------------------------------------------------------- |
+| --bin      | Also add `bin` field                                                  |
+| --only-bin | Use `bin` files for `main` and `types` and do not add `exports` field |
+
+<br/>
 
 ## `__dirname` & `__filename`
 
