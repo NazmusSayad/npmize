@@ -12,6 +12,8 @@ Let's create an npm package without worring about anything.
   <img src="https://img.shields.io/npm/v/npm-ez" alt="npm package"> 
 </a>
 
+<br/>
+
 ## Installation
 
 - with npm
@@ -51,9 +53,9 @@ npx npm-ez <command> [options]
 npx npm-ez dev
 ```
 
-**Warning:** If you would like to use it as globaly you need to install `typescript` & `@types/node` globally.
-
 _This starts typescript watch mode._
+
+**Warning:** If you would like to use it as globaly you need to install `typescript` & `@types/node` globally.
 
 <br/>
 <br/>
@@ -85,6 +87,7 @@ _This starts typescript watch mode._
 | --bin      | Also add `bin` field                                                  |
 | --only-bin | Use `bin` files for `main` and `types` and do not add `exports` field |
 
+<br/>
 <br/>
 <br/>
 
