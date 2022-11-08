@@ -4,17 +4,38 @@ import shell from 'shelljs'
 import { getPackageData } from '../utils/utils.js'
 const requiredPackages = ['typescript', '@types/node']
 
-export const getPkgManager = (): 'npm' | 'yarn' | 'pnpm' => {
-  const nodeModules = path.resolve('./node_modules')
-  const npmLock = fs.existsSync(path.join(nodeModules, '.package-lock.json'))
-  const pnpmLock = fs.existsSync(path.join(nodeModules, '.modules.yaml'))
-  const yarnLock = fs.existsSync(path.join(nodeModules, '.yarn-integrity'))
+const checkPackageManager = (
+  npm,
+  yarn,
+  pnpm
+): 'npm' | 'yarn' | 'pnpm' | false => {
+  const npmRef = fs.existsSync(npm)
+  const yarnRef = fs.existsSync(yarn)
+  const pnpmRef = fs.existsSync(pnpm)
 
-  if (+npmLock + +pnpmLock + +yarnLock > 1) {
+  if (+npmRef + +pnpmRef + +yarnRef > 1) {
     throw new Error('Unable to get package manager.')
   }
 
-  return npmLock ? 'npm' : yarnLock ? 'yarn' : pnpmLock ? 'pnpm' : 'npm'
+  return npmRef ? 'npm' : yarnRef ? 'yarn' : pnpmRef ? 'pnpm' : false
+}
+
+export const getPkgManager = (): 'npm' | 'yarn' | 'pnpm' => {
+  const nodeModules = path.resolve('./node_modules')
+
+  return (
+    checkPackageManager(
+      path.join(nodeModules, '.package-lock.json'),
+      path.join(nodeModules, '.yarn-integrity'),
+      path.join(nodeModules, '.modules.yaml')
+    ) ||
+    checkPackageManager(
+      path.resolve('package-lock.json'),
+      path.resolve('yarn.lock'),
+      path.resolve('pnpm-lock.yaml')
+    ) ||
+    'npm'
+  )
 }
 
 export const installDevPackage = (pkm, ...packageNames: string[]): void => {
