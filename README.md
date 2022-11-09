@@ -127,3 +127,10 @@ console.log(__filename)
 ```
 
 **Warning:** If you place it like `('use __dirname')` or `['use __dirname']`, it will throw a syntax error.
+
+<br/>
+<br/>
+
+## **Remember:**
+
+- If you install this globaly then use external types (eg: @types/node) you also need to install that globally

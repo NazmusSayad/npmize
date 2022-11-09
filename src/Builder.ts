@@ -7,7 +7,7 @@ import { readJOSN, writeJOSN, cleanDir } from './utils/utils.js'
 class Builder {
   #libDir = path.join(__dirname, '../lib')
   #rootDir = path.resolve('./src')
-  #tempTSConfig = path.join(this.#libDir, './tsconfig-temp.json')
+  #tempTSConfig = path.join(this.#libDir, './tsconfig.json')
 
   dev(): void {
     this.#getTSConfig()
@@ -77,7 +77,7 @@ class Builder {
     const userTsc = readJOSN(path.resolve('./tsconfig.json'))
     const tempTsConf: any = {}
 
-    tempTsConf.extends = './tsconfig.json'
+    tempTsConf.extends = './tsconfig-core.json'
     tempTsConf.include = [this.#rootDir]
     tempTsConf.compilerOptions = userTsc.compilerOptions
 

@@ -1,7 +1,7 @@
 {
   "name": "npm-ez",
   "description": "Let's create an npm package without worring about anything.",
-  "version": "0.0.7",
+  "version": "0.0.10",
   "main": "./bin/index.js",
   "types": "./bin/index.d.js",
   "bin": {
@@ -12,7 +12,6 @@
     "build": "tsc",
     "test": "node bin --no-src --no-ignore build"
   },
-  "preferGlobal": false,
   "type": "commonjs",
   "dependencies": {
     "node-ls-files": "^0.0.3",

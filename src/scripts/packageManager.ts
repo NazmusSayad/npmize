@@ -2,9 +2,9 @@ import fs from 'fs'
 import path from 'path'
 import shell from 'shelljs'
 import { getPackageData } from '../utils/utils.js'
-const requiredPackages = ['typescript', '@types/node']
+const requiredPackages = ['typescript']
 
-const checkPackageManager = (
+const getPkgManagerCore = (
   npm,
   yarn,
   pnpm
@@ -25,12 +25,12 @@ export const getPkgManager = (): 'npm' | 'yarn' | 'pnpm' => {
   const nodeModules = path.resolve('./node_modules')
 
   return (
-    checkPackageManager(
+    getPkgManagerCore(
       path.join(nodeModules, '.package-lock.json'),
       path.join(nodeModules, '.yarn-integrity'),
       path.join(nodeModules, '.modules.yaml')
     ) ||
-    checkPackageManager(
+    getPkgManagerCore(
       path.resolve('package-lock.json'),
       path.resolve('yarn.lock'),
       path.resolve('pnpm-lock.yaml')

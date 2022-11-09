@@ -9,17 +9,12 @@
     "lib": ["esnext", "dom"],
     "listEmittedFiles": false,
     "listFiles": false,
-    "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
     "pretty": true,
-    "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
     "traceResolution": false,
-    "strictNullChecks": true,
-    "removeComments": true,
-    "noImplicitAny": false,
-    "types": ["node"]
+    "removeComments": true
   },
   "compileOnSave": false
 }

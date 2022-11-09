@@ -7,8 +7,8 @@ export default (): void => {
   const addBin = isOnlyBinMode || argv.flag['bin']
 
   pkgData.scripts ||= {}
-  pkgData.dev = 'npm-ez dev'
-  pkgData.build = 'npm-ez build'
+  pkgData.scripts.dev = 'npm-ez dev'
+  pkgData.scripts.build = 'npm-ez build'
 
   if (addBin) {
     pkgData.bin = {
