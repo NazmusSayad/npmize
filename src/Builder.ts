@@ -29,6 +29,7 @@ class Builder {
     })
 
     files.forEach((file) => this.#prependNodeCode(file))
+    fs.rmSync(this.#tempTSConfig)
   }
 
   #runCmd(type: 'cjs' | 'mjs', { watch = false } = {}): string {
@@ -43,6 +44,7 @@ class Builder {
       `--project ${this.#tempTSConfig}`,
       `--rootDir ${this.#rootDir}`,
       `--baseUrl ${this.#rootDir}`,
+      `--outDir ${outDir}`,
       `--module ${outputModule}`,
       watch && '--watch',
     ]
@@ -91,7 +93,7 @@ class Builder {
   #__import = `import{fileURLToPath as ${this.#__var}}from'url';`
   #__filename = `let __filename=${this.#__var}(import.meta.url);`
   #__dirname = `let __dirname=${this.#__var}(new URL('.',import.meta.url));`
-  #__nodeCode = this.#__import + this.#__dirname + this.#__filename
+  #__nodeCode = this.#__import + this.#__dirname + this.#__filename + '\n'
 }
 
 export default Builder

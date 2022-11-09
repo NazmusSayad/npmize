@@ -12,6 +12,7 @@
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "strict": true,
+    "pretty": true,
     "traceResolution": false,
     "removeComments": true
   },
