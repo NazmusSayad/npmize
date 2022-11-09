@@ -51,12 +51,14 @@ The interface for command-line usage is fairly simplistic at this stage, as seen
 ## Usage
 
 ```shell
+npm-ez <command> [options]
 npx npm-ez <command> [options]
 ```
 
 ### Example:
 
 ```shell
+npm-ez dev
 npx npm-ez dev
 ```
 
