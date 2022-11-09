@@ -6,11 +6,12 @@ import { readJOSN, writeJOSN, cleanDir } from './utils/utils.js'
 
 class Builder {
   #libDir = path.join(__dirname, '../lib')
+  #defaultTsconfig = path.join(this.#libDir, './tsconfig-default.json')
+  #tempTSConfig = path.join(this.#libDir, './tsconfig.json')
   #rootDir = path.resolve('./src')
-  #tempTSConfig = path.join(this.#libDir, './tsconfig-temp.json')
 
   dev(): void {
-    this.#getTSConfig()
+    this.#writeTempTsonfig()
     this.#runCmd('cjs', {
       watch: true,
     })
@@ -19,7 +20,7 @@ class Builder {
   build(): void {
     console.log('Build started...')
 
-    this.#getTSConfig()
+    this.#writeTempTsonfig()
     this.#runCmd('cjs')
 
     const outputDir = this.#runCmd('mjs')
@@ -28,71 +29,69 @@ class Builder {
     })
 
     files.forEach((file) => this.#prependNodeCode(file))
-    this.#removeTSConfig()
   }
 
   #runCmd(type: 'cjs' | 'mjs', { watch = false } = {}): string {
     const outDir = path.resolve(`./dist-${type}`)
-    const tscFile = path.join(this.#libDir, `./tsconfig-${type}.json`)
+    const outputModule = type === 'cjs' ? 'commonjs' : 'es6'
 
     cleanDir(outDir)
     this.#addPackageData(outDir, type === 'cjs' ? 'commonjs' : 'module')
 
     const command = [
       'tsc',
-      `--project ${tscFile}`,
+      `--project ${this.#tempTSConfig}`,
       `--rootDir ${this.#rootDir}`,
       `--baseUrl ${this.#rootDir}`,
-      `--outDir ${outDir}`,
-      watch && ' -w',
+      `--module ${outputModule}`,
+      watch && '--watch',
     ]
+
     const optimizeCommand = command.filter((o) => o).join(' ')
     shell.exec(optimizeCommand, { async: watch })
-
     return outDir
   }
 
   #addPackageData(outDir: string, type: 'commonjs' | 'module'): void {
     if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true })
-
-    const target = path.join(outDir, './package.json')
-    writeJOSN(target, { type })
+    writeJOSN(path.join(outDir, './package.json'), { type })
   }
 
   #prependNodeCode(file: string): void {
-    let data = fs.readFileSync(file, 'utf-8')
-    const dirNameRegex = /('|")use __dirname('|");?/gm
-    const fileNameRegex = /('|")use __filename('|");?/gm
-    const isUsingAnything = dirNameRegex.test(data) || fileNameRegex.test(data)
-    if (!isUsingAnything) return
+    let data: string = fs.readFileSync(file, 'utf-8')
 
-    fs.writeFileSync(
-      file,
-      this.#__nodeCode +
-        data
-          .replace(dirNameRegex, this.#__nodeCode__dirname)
-          .replace(fileNameRegex, this.#__nodeCode__filename)
-    )
+    if (data.startsWith('#!')) {
+      const dataLines = data.split('\n')
+      dataLines.splice(1, 0, this.#__nodeCode)
+      data = dataLines.join('\n')
+    } else {
+      data = this.#__nodeCode + data
+    }
+
+    fs.writeFileSync(file, data)
   }
 
-  #getTSConfig() {
-    const userTsc = readJOSN(path.resolve('./tsconfig.json'))
-    const tempTsConf: any = {}
+  #writeTempTsonfig() {
+    const { compilerOptions = {} } = readJOSN(path.resolve('./tsconfig.json'))
+    const userTypeRoots = compilerOptions.typeRoots ?? []
 
-    tempTsConf.extends = './tsconfig.json'
-    tempTsConf.include = [this.#rootDir]
-    tempTsConf.compilerOptions = userTsc.compilerOptions
-
+    const tempTsConf = {
+      extends: this.#defaultTsconfig,
+      include: [this.#rootDir],
+      compilerOptions: {
+        ...compilerOptions,
+        typeRoots: [path.resolve('./node_modules/@types'), ...userTypeRoots],
+      },
+    }
     writeJOSN(this.#tempTSConfig, tempTsConf)
   }
 
-  #removeTSConfig() {
-    fs.rmSync(this.#tempTSConfig)
-  }
-
-  #__nodeCode = `import{fileURLToPath as ______fIlE___UrL___tO___pATh______}from'url';`
-  #__nodeCode__filename = `let __filename=______fIlE___UrL___tO___pATh______(import.meta.url);`
-  #__nodeCode__dirname = `let __dirname=______fIlE___UrL___tO___pATh______(new URL('.',import.meta.url));`
+  #__var =
+    'VGhpcyBuYW1lIGlzIGFscmVhZHkgdXNlZCB0byBlbmFibGUgX19kaXJuYW1lIGFuZCBfX2ZpbGVuYW1lIDop'
+  #__import = `import{fileURLToPath as ${this.#__var}}from'url';`
+  #__filename = `let __filename=${this.#__var}(import.meta.url);`
+  #__dirname = `let __dirname=${this.#__var}(new URL('.',import.meta.url));`
+  #__nodeCode = this.#__import + this.#__dirname + this.#__filename
 }
 
 export default Builder

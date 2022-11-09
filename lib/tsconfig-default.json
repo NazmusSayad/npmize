@@ -1,28 +1,19 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "outDir": "dist",
     "target": "es6",
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "src",
     "declaration": true,
     "esModuleInterop": true,
     "inlineSourceMap": false,
-    "lib": ["esnext", "dom"],
+    "lib": ["esnext", "dom", "webworker"],
     "listEmittedFiles": false,
     "listFiles": false,
     "noFallthroughCasesInSwitch": true,
-    "pretty": true,
-    "resolveJsonModule": true,
-    "rootDir": "src",
     "skipLibCheck": true,
     "strict": true,
     "traceResolution": false,
-    "strictNullChecks": true,
-    "removeComments": true,
-    "noImplicitAny": false
+    "removeComments": true
   },
-  "compileOnSave": false,
-  "include": ["src"]
+  "compileOnSave": false
 }

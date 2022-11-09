@@ -103,8 +103,5 @@ dist
 # TernJS port file
 .tern-port
 
-bin/
-
-# Added by npm-ez
-dist-cjs
-dist-mjs
+# Custom 
+/lib/tsconfig.json

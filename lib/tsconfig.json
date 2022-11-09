@@ -1,20 +1,11 @@
 {
-  "compilerOptions": {
-    "target": "es6",
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "declaration": true,
-    "esModuleInterop": true,
-    "inlineSourceMap": false,
-    "lib": ["esnext", "dom"],
-    "listEmittedFiles": false,
-    "listFiles": false,
-    "noFallthroughCasesInSwitch": true,
-    "pretty": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "traceResolution": false,
-    "removeComments": true
-  },
-  "compileOnSave": false
+	"extends": "/workspaces/npm-is-easy/lib/tsconfig-default.json",
+	"include": [
+		"/workspaces/test3/src"
+	],
+	"compilerOptions": {
+		"typeRoots": [
+			"/workspaces/test3/node_modules/@types"
+		]
+	}
 }

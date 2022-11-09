@@ -1,11 +1,11 @@
 {
   "name": "npm-ez",
   "description": "Let's create an npm package without worring about anything.",
-  "version": "0.0.11",
-  "main": "./bin/index.js",
-  "types": "./bin/index.d.js",
+  "version": "0.0.12",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.js",
   "bin": {
-    "npm-ez": "./bin/index.js"
+    "npm-ez": "./dist/index.js"
   },
   "scripts": {
     "dev": "tsc -w",
