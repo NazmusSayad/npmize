@@ -19,13 +19,13 @@ const fileInfo = [
 
 export default (): void => {
   fileInfo.forEach(({ path, lines }) => {
-    const text = '# Added by npm-ez\n' + lines.join('\n') + '\n'
+    const text = '\n# Added by npm-ez\n' + lines.join('\n') + '\n'
 
     if (!fs.existsSync(path)) {
       return fs.writeFileSync(path, text)
     }
 
     const fileLines = fs.readFileSync(path, 'utf-8')
-    fileLines.includes(text) || fs.appendFileSync(path, '\n' + text)
+    fileLines.includes(text) || fs.appendFileSync(path, text)
   })
 }

@@ -7,7 +7,7 @@ import { readJOSN, writeJOSN, cleanDir } from './utils/utils.js'
 class Builder {
   #libDir = path.join(__dirname, '../lib')
   #rootDir = path.resolve('./src')
-  #tempTSConfig = path.join(this.#libDir, './tsconfig.json')
+  #tempTSConfig = path.join(this.#libDir, './tsconfig-temp.json')
 
   dev(): void {
     this.#getTSConfig()
@@ -17,6 +17,8 @@ class Builder {
   }
 
   build(): void {
+    console.log('Build started...')
+
     this.#getTSConfig()
     this.#runCmd('cjs')
 
@@ -33,19 +35,19 @@ class Builder {
     const outDir = path.resolve(`./dist-${type}`)
     const tscFile = path.join(this.#libDir, `./tsconfig-${type}.json`)
 
-    const options = [
+    cleanDir(outDir)
+    this.#addPackageData(outDir, type === 'cjs' ? 'commonjs' : 'module')
+
+    const command = [
+      'tsc',
       `--project ${tscFile}`,
       `--rootDir ${this.#rootDir}`,
       `--baseUrl ${this.#rootDir}`,
       `--outDir ${outDir}`,
       watch && ' -w',
     ]
-
-    cleanDir(outDir)
-    this.#addPackageData(outDir, type === 'cjs' ? 'commonjs' : 'module')
-
-    const optimizeOptions = options.filter((o) => o).join(' ')
-    shell.exec('npx tsc ' + optimizeOptions, { async: watch })
+    const optimizeCommand = command.filter((o) => o).join(' ')
+    shell.exec(optimizeCommand, { async: watch })
 
     return outDir
   }
@@ -77,7 +79,7 @@ class Builder {
     const userTsc = readJOSN(path.resolve('./tsconfig.json'))
     const tempTsConf: any = {}
 
-    tempTsConf.extends = './tsconfig-core.json'
+    tempTsConf.extends = './tsconfig.json'
     tempTsConf.include = [this.#rootDir]
     tempTsConf.compilerOptions = userTsc.compilerOptions
 

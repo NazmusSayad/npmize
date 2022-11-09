@@ -9,19 +9,15 @@ argv.flag['no-install'] || packageManager()
 argv.flag['no-ignore'] || ignoreData()
 argv.flag['no-src'] || makeSrc()
 
-const builder = new Builder()
-
 switch (argv.cmd) {
   case 'init':
     initPkgJSON()
     break
 
   case 'dev':
-    builder.dev()
-    break
-
   case 'build':
-    builder.build()
+    const builder = new Builder()
+    builder[argv.cmd]()
     break
 
   case '':

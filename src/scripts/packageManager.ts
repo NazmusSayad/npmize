@@ -1,7 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 import shell from 'shelljs'
-import { getPackageData } from '../utils/utils.js'
+import argv from '../argv.js'
+import { readJOSN, getPackagePath } from '../utils/utils.js'
 const requiredPackages = ['typescript']
 
 const getPkgManagerCore = (
@@ -21,7 +22,7 @@ const getPkgManagerCore = (
   return npmRef ? 'npm' : yarnRef ? 'yarn' : pnpmRef ? 'pnpm' : false
 }
 
-export const getPkgManager = (): 'npm' | 'yarn' | 'pnpm' => {
+const getPkgManager = (): 'npm' | 'yarn' | 'pnpm' => {
   const nodeModules = path.resolve('./node_modules')
 
   return (
@@ -39,27 +40,40 @@ export const getPkgManager = (): 'npm' | 'yarn' | 'pnpm' => {
   )
 }
 
-export const installDevPackage = (pkm, ...packageNames: string[]): void => {
-  if (!packageNames.length) return
+const manageLocalPackage = (): void => {
+  const packageData = readJOSN(getPackagePath())
+  const missingPackages = requiredPackages.filter((dep) => {
+    return !Boolean(
+      (packageData.dependencies && packageData.dependencies[dep]) ||
+        (packageData.devDependencies && packageData.devDependencies[dep])
+    )
+  })
+  if (!missingPackages.length) return
+
+  const pkm = getPkgManager()
   const installCmd = pkm === 'yarn' ? 'add' : 'install'
-  shell.exec(`${pkm} ${installCmd} -D ${packageNames.join(' ')}`)
+  const packagesList = missingPackages.join(' ')
+  shell.exec(`${pkm} ${installCmd} -D ${packagesList}`)
 }
 
-export const getMissingPkgs = (targetDeps: string[]): string[] => {
-  const pkgData = getPackageData()
-
-  return targetDeps.filter((dep) => {
-    const installed = Boolean(
-      (pkgData.dependencies && pkgData.dependencies[dep]) ||
-        (pkgData.devDependencies && pkgData.devDependencies[dep])
-    )
-
-    return !installed
+const manageGlobalPackage = (): void => {
+  const res = shell
+    .exec(`npm ls -g --depth=0 --json`, { silent: true })
+    .toString()
+  const installedPkgs = Object.keys(JSON.parse(res).dependencies || {})
+  const missingPackages = requiredPackages.filter((pkg) => {
+    return !installedPkgs.includes(pkg)
   })
+  if (!missingPackages.length) return
+
+  const packagesList = missingPackages.join(' ')
+  shell.exec(`npm install -g ${packagesList}`)
 }
 
 export default (): void => {
-  const missingPkgs = getMissingPkgs(requiredPackages)
-  const pkm = getPkgManager()
-  installDevPackage(pkm, ...missingPkgs)
+  if (argv.isLocal) {
+    manageLocalPackage()
+  } else {
+    manageGlobalPackage()
+  }
 }

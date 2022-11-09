@@ -90,7 +90,7 @@ _This starts typescript watch mode._
 | Option     | Description                                                           |
 | ---------- | --------------------------------------------------------------------- |
 | --bin      | Also add `bin` field                                                  |
-| --only-bin | Use `bin` files for `main` and `types` and do not add `exports` field |
+| --bin-mode | Use `bin` files for `main` and `types` and do not add `exports` field |
 
 <br/>
 <br/>
@@ -131,6 +131,6 @@ console.log(__filename)
 <br/>
 <br/>
 
-## **Remember:**
+## **Note:**
 
-- If you install this globaly then use external types (eg: @types/node) you also need to install that globally
+- If you don't star our github repo your wife will divorce you, Else if you don't have wife then you will never get her.

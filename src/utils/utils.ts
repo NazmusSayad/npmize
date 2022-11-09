@@ -5,17 +5,6 @@ export const getPackagePath = () => {
   return path.resolve('./package.json')
 }
 
-export const getPackageData = (): any => {
-  const pkgPath = getPackagePath()
-
-  if (!fs.existsSync(pkgPath)) {
-    fs.writeFileSync(pkgPath, '{}')
-    return {}
-  }
-
-  return readJOSN(pkgPath)
-}
-
 export const writeJOSN = (path: string, data: {}): void => {
   fs.writeFileSync(path, JSON.stringify(data, null, '\t'))
 }

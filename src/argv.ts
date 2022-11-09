@@ -1,7 +1,10 @@
+import path from 'path'
+
 const argvList = [...process.argv]
 const argv = {
   node: argvList.shift(),
   script: argvList.shift(),
+  isLocal: process.argv[1].startsWith(path.resolve('./node_modules')),
   cmd: '',
   flag: {},
   sFlag: {},

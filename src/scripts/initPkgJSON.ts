@@ -1,9 +1,9 @@
 import argv from '../argv.js'
-import { getPackageData, getPackagePath, writeJOSN } from '../utils/utils.js'
+import { getPackagePath, writeJOSN, readJOSN } from '../utils/utils.js'
 
 export default (): void => {
-  const pkgData = getPackageData()
-  const isOnlyBinMode = argv.flag['only-bin']
+  const pkgData = readJOSN(getPackagePath())
+  const isOnlyBinMode = argv.flag['bin-mode']
   const addBin = isOnlyBinMode || argv.flag['bin']
 
   pkgData.scripts ||= {}
