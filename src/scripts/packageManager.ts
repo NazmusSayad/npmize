@@ -40,31 +40,22 @@ export const getPkgManager = (): 'npm' | 'yarn' | 'pnpm' => {
 }
 
 export const installDevPackage = (pkm, ...packageNames: string[]): void => {
+  if (!packageNames.length) return
   const installCmd = pkm === 'yarn' ? 'add' : 'install'
   shell.exec(`${pkm} ${installCmd} -D ${packageNames.join(' ')}`)
 }
 
-export const getMissingPkgs = (targetDeps: string[]) => {
+export const getMissingPkgs = (targetDeps: string[]): string[] => {
   const pkgData = getPackageData()
-  const result: string[] = []
 
-  const isNpmEzLocal = Boolean(
-    (pkgData.dependencies && pkgData.dependencies['npm-ez']) ||
-      (pkgData.devDependencies && pkgData.devDependencies['npm-ez'])
-  )
+  return targetDeps.filter((dep) => {
+    const installed = Boolean(
+      (pkgData.dependencies && pkgData.dependencies[dep]) ||
+        (pkgData.devDependencies && pkgData.devDependencies[dep])
+    )
 
-  if (isNpmEzLocal) {
-    targetDeps.forEach((dep) => {
-      const installed = Boolean(
-        (pkgData.dependencies && pkgData.dependencies[dep]) ||
-          (pkgData.devDependencies && pkgData.devDependencies[dep])
-      )
-
-      installed || result.push(dep)
-    })
-  }
-
-  return result
+    return !installed
+  })
 }
 
 export default (): void => {

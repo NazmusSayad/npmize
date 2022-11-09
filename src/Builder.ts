@@ -7,7 +7,7 @@ import { readJOSN, writeJOSN, cleanDir } from './utils/utils.js'
 class Builder {
   #libDir = path.join(__dirname, '../lib')
   #rootDir = path.resolve('./src')
-  #tempTSConfig = path.join(this.#libDir, './tsconfig.json')
+  #tempTSConfig = path.join(this.#libDir, './tsconfig-temp.json')
 
   dev(): void {
     this.#getTSConfig()
@@ -45,7 +45,7 @@ class Builder {
     this.#addPackageData(outDir, type === 'cjs' ? 'commonjs' : 'module')
 
     const optimizeOptions = options.filter((o) => o).join(' ')
-    shell.exec('tsc ' + optimizeOptions, { async: watch })
+    shell.exec('npx tsc ' + optimizeOptions, { async: watch })
 
     return outDir
   }
@@ -74,16 +74,14 @@ class Builder {
   }
 
   #getTSConfig() {
-    const userTscPath = path.resolve('./tsconfig.json')
+    const userTsc = readJOSN(path.resolve('./tsconfig.json'))
+    const tempTsConf: any = {}
 
-    const userTsc = readJOSN(userTscPath)
-    const libTsc = readJOSN(this.#tempTSConfig)
+    tempTsConf.extends = './tsconfig.json'
+    tempTsConf.include = [this.#rootDir]
+    tempTsConf.compilerOptions = userTsc.compilerOptions
 
-    libTsc.extends = './tsconfig-core.json'
-    libTsc.include = [this.#rootDir]
-    libTsc.compilerOptions = userTsc.compilerOptions
-
-    writeJOSN(this.#tempTSConfig, libTsc)
+    writeJOSN(this.#tempTSConfig, tempTsConf)
   }
 
   #removeTSConfig() {

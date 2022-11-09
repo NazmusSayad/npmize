@@ -5,6 +5,7 @@ Let's create an npm package without worring about anything.
 ## Features
 
 - Uses `typescript`.
+- Very very lightweight.
 - Compiles into only `cjs` in dev mode and both `cjs` and `mjs`(esmodule) in build mode.
 - Enables `__dirname` and `__filename` for `mjs`(esmodule).
 
@@ -15,6 +16,12 @@ Let's create an npm package without worring about anything.
 <br/>
 
 ## Installation
+
+- with npm (globally)
+
+```shell
+npm i -g npm-ez
+```
 
 - with npm
 
@@ -55,8 +62,6 @@ npx npm-ez dev
 
 _This starts typescript watch mode._
 
-**Warning:** If you would like to use it as globaly you need to install `typescript` & `@types/node` globally.
-
 <br/>
 <br/>
 
@@ -71,8 +76,6 @@ _This starts typescript watch mode._
 <br/>
 
 ## Command Options
-
-### Global:
 
 | Option       | Description                                                   |
 | ------------ | ------------------------------------------------------------- |
@@ -91,7 +94,7 @@ _This starts typescript watch mode._
 <br/>
 <br/>
 
-## `__dirname` & `__filename`
+## About `__dirname` & `__filename`
 
 To enable `__dirname` or `__filename` you need to add the following code at the top of each file you need to use it:
 
