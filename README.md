@@ -88,6 +88,7 @@ _This starts typescript watch mode._
 
 | Option       | Description                                                   |
 | ------------ | ------------------------------------------------------------- |
+| --node       | This enables `__dirname` and `__filename` in esmodule         |
 | --no-install | Not to install required dependencies automatically            |
 | --no-ignore  | Not to add recommended ignore files to gitignore \| npmignore |
 | --no-src     | Not to create src/index.ts folder when not exists             |
@@ -109,7 +110,7 @@ _This starts typescript watch mode._
 
 - Do not use `VGhpcyBuYW1lIGlzIGFscmVhZHkgdXNlZCB0byBlbmFibGUgX19kaXJuYW1lIGFuZCBfX2ZpbGVuYW1lIDop` as a variable name in your top level code.
 
-  - If you want to know why! [`Base64`](https://www.base64decode.org/) ... Hope you know.
+  - If you want to know why! [`Base64`](https://www.base64decode.org) ... Hope you know.
 
 - If you don't star our github repo your wife will divorce you, Else if you don't have wife then you will never get her.
 

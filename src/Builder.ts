@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import shell from 'shelljs'
 import lsFiles from 'node-ls-files'
+import argv from './argv.js'
 import { readJOSN, writeJOSN, cleanDir } from './utils/utils.js'
 
 class Builder {
@@ -24,12 +25,15 @@ class Builder {
     this.#runCmd('cjs')
 
     const outputDir = this.#runCmd('mjs')
+    fs.rmSync(this.#tempTSConfig)
+
+    // @ts-ignore
+    if (!argv.flag.node) return
+
     const files = lsFiles.sync(outputDir, {
       filter: /\.m?js$/,
     })
-
     files.forEach((file) => this.#prependNodeCode(file))
-    fs.rmSync(this.#tempTSConfig)
   }
 
   #runCmd(type: 'cjs' | 'mjs', { watch = false } = {}): string {
