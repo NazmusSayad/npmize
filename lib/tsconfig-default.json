@@ -1,20 +1,14 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "declaration": true,
-    "esModuleInterop": true,
-    "inlineSourceMap": false,
-    "lib": ["esnext", "dom", "webworker"],
-    "listEmittedFiles": false,
-    "listFiles": false,
-    "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
+    "lib": ["esnext", "dom", "webworker"],
+
+    "declaration": true,
+    "inlineSourceMap": false,
+
     "strict": true,
     "pretty": true,
-    "traceResolution": false,
     "removeComments": true
-  },
-  "compileOnSave": false
+  }
 }

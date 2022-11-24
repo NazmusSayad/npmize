@@ -1,7 +1,7 @@
 {
   "name": "npm-ez",
   "description": "Let's create an npm package without worring about anything.",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "main": "./dist/index.js",
   "types": "./dist/index.d.js",
   "bin": {
@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "tsc -w",
     "build": "tsc",
+    "set": "yarn build && npm i -g .",
     "test": "node bin --no-src --no-ignore build"
   },
   "type": "commonjs",

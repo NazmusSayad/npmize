@@ -1,7 +1,18 @@
+import path from 'path'
 import argv from '../argv.js'
 import { getPackagePath, writeJOSN, readJOSN } from '../utils/utils.js'
 
-export default (): void => {
+const writeTSConfig = (): void => {
+  const userTsConf = readJOSN(path.resolve('./tsconfig.json'))
+  const { compilerOptions = {} } = readJOSN(
+    path.join(__dirname, '../../lib/tsconfig-default.json')
+  )
+  userTsConf.compilerOptions ??= {}
+  Object.assign(userTsConf.compilerOptions, compilerOptions)
+  writeJOSN(path.resolve('./tsconfig.json'), userTsConf)
+}
+
+const writePackageJSON = (): void => {
   const pkgData = readJOSN(getPackagePath())
   const isOnlyBinMode = argv.flag['bin-mode']
   const addBin = isOnlyBinMode || argv.flag['bin']
@@ -31,4 +42,9 @@ export default (): void => {
   }
 
   writeJOSN(getPackagePath(), pkgData)
+}
+
+export default (): void => {
+  writeTSConfig()
+  writePackageJSON()
 }

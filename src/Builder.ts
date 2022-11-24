@@ -25,7 +25,7 @@ class Builder {
     this.#runCmd('cjs')
 
     const outputDir = this.#runCmd('mjs')
-    fs.rmSync(this.#tempTSConfig)
+    // fs.rmSync(this.#tempTSConfig)
 
     // @ts-ignore
     if (!argv.flag.node) return
@@ -86,7 +86,10 @@ class Builder {
       include: [this.#rootDir],
       compilerOptions: {
         ...compilerOptions,
-        typeRoots: [path.resolve('./node_modules/@types'), ...userTypeRoots],
+        typeRoots: [
+          path.resolve('./node_modules/@types'),
+          ...userTypeRoots.map((tr) => path.resolve(tr)),
+        ],
       },
     }
     writeJOSN(this.#tempTSConfig, tempTsConf)

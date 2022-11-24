@@ -114,6 +114,8 @@ _This starts typescript watch mode._
 
 - If you don't star our github repo your wife will divorce you, Else if you don't have wife then you will never get her.
 
+- This only takes your `compilerOptions` form `tscofnig.json` not the entire `tsconfig.json` file.
+
 <br/>
 
 ---
