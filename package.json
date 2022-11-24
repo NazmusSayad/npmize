@@ -1,7 +1,7 @@
 {
   "name": "npm-ez",
   "description": "Let's create an npm package without worring about anything.",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "main": "./dist/index.js",
   "types": "./dist/index.d.js",
   "bin": {
