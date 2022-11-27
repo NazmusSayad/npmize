@@ -1,3 +1,4 @@
+import ac from 'ansi-colors'
 import argv from './argv.js'
 import init from './scripts/init.js'
 import ignore from './scripts/ignoreData.js'
@@ -23,10 +24,10 @@ switch (argv.cmd) {
     break
 
   case '':
-    console.log('No command found')
+    console.warn(ac.yellow('No command found'))
     process.exit(1)
 
   default:
-    console.log('Unknown command')
+    console.error(ac.red('Unknown command `' + ac.yellow(argv.cmd) + '`'))
     process.exit(1)
 }

@@ -11,5 +11,4 @@ export const defaultTSConfigPath = path.join(
 
 export const srcPath = path.resolve('./src')
 
-
 export const tscOptPrefix = 'tsc'

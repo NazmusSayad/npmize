@@ -1,12 +1,12 @@
 import fs from 'fs'
 import runCmd from './runCmd'
 import { mjsOutDir } from '../config'
-import { writeTSConfig } from '../scripts/init'
 import argv from '../argv'
 import nodeCode from './nodeCode'
+import writeTSConf from './writeTSConf'
 
 export const dev = (): void => {
-  writeTSConfig()
+  writeTSConf()
 
   runCmd('cjs')
 
@@ -16,7 +16,7 @@ export const dev = (): void => {
 }
 
 export const build = (): void => {
-  writeTSConfig()
+  writeTSConf()
 
   runCmd('cjs')
   runCmd('mjs')

@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import shell from 'shelljs'
+import ac from 'ansi-colors'
 import argv from '../argv.js'
 import { readJOSN, getPackagePath } from '../utils/utils.js'
 const requiredPackages = ['typescript']
@@ -15,7 +16,12 @@ const getPkgManagerCore = (
   const pnpmRef = fs.existsSync(pnpm)
 
   if (+npmRef + +pnpmRef + +yarnRef > 1) {
-    console.log('Unable to get package manager.')
+    console.error(
+      ac.red(
+        'Unable to get primary package manager.\n' +
+          'Please install the given packages manually,\n'
+      ) + ac.blue('- ' + requiredPackages.join('\n- '))
+    )
     process.exit(1)
   }
 

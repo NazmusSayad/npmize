@@ -3,13 +3,13 @@ import { getPackagePath, writeJOSN, readJOSN } from '../utils/utils.js'
 import { defaultTSConfigPath, userTSConfigPath } from '../config.js'
 
 export const writeTSConfig = (): void => {
-  const finalConf = {
-    compilerOptions: {
-      ...(readJOSN(defaultTSConfigPath).compilerOptions ?? {}),
-      ...(readJOSN(userTSConfigPath).compilerOptions ?? {}),
-    },
-    include: ['src'],
-  }
+  const finalConf = readJOSN(userTSConfigPath)
+
+  Object.assign(
+    (finalConf.compilerOptions ??= {}),
+    readJOSN(defaultTSConfigPath).compilerOptions ?? {}
+  )
+  finalConf.include = ['src']
 
   writeJOSN(userTSConfigPath, finalConf)
 }

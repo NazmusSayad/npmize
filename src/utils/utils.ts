@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import ac from 'ansi-colors'
 
 export const getPackagePath = () => {
   return path.resolve('./package.json')
@@ -11,7 +12,12 @@ export const writeJOSN = (path: string, data: {}): void => {
 export const readJOSN = (path: string): any => {
   try {
     return JSON.parse(fs.readFileSync(path, 'utf8'))
-  } catch {
+  } catch (err: any) {
+    if (err.name === 'SyntaxError') {
+      console.error(ac.red(`Invalid json input ${path}`))
+      process.exit(1)
+    }
+
     return {}
   }
 }

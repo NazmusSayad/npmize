@@ -2,7 +2,7 @@ import fs from 'fs'
 const fileInfo = [
   {
     path: './.gitignore',
-    lines: ['dist-cjs', 'dist-mjs', 'node_modules'],
+    lines: ['node_modules', 'dist-cjs', 'dist-mjs'],
   },
   {
     path: './.npmignore',
