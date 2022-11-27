@@ -2,7 +2,7 @@ import fs from 'fs'
 const fileInfo = [
   {
     path: './.gitignore',
-    lines: ['dist-cjs', 'dist-mjs'],
+    lines: ['dist-cjs', 'dist-mjs', 'node_modules'],
   },
   {
     path: './.npmignore',
@@ -19,13 +19,14 @@ const fileInfo = [
 
 export default (): void => {
   fileInfo.forEach(({ path, lines }) => {
-    const text = '\n# Added by npm-ez\n' + lines.join('\n') + '\n'
+    let text = '# Added by npm-ez\n' + lines.join('\n') + '\n'
 
-    if (!fs.existsSync(path)) {
-      return fs.writeFileSync(path, text)
+    if (fs.existsSync(path)) {
+      const fileLines = fs.readFileSync(path, 'utf-8')
+      if (fileLines.includes(text)) return
+      text = fileLines.trim() + '\n\n' + text
     }
 
-    const fileLines = fs.readFileSync(path, 'utf-8')
-    fileLines.includes(text) || fs.appendFileSync(path, text)
+    fs.writeFileSync(path, text)
   })
 }

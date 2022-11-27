@@ -1,9 +1,9 @@
 import argv from './argv.js'
-import Builder from './Builder.js'
 import init from './scripts/init.js'
 import ignore from './scripts/ignoreData.js'
 import makeSrc from './scripts/makeSrc.js'
 import packageManager from './scripts/packageManager.js'
+import * as builder from './builder'
 
 argv.flag['no-install'] || packageManager()
 argv.flag['no-ignore'] || ignore()
@@ -15,9 +15,11 @@ switch (argv.cmd) {
     break
 
   case 'dev':
+    builder.dev()
+    break
+
   case 'build':
-    const builder = new Builder()
-    builder[argv.cmd]()
+    builder.build()
     break
 
   case '':

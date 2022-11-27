@@ -98,7 +98,14 @@ _This starts typescript watch mode._
 | Option     | Description                                                           |
 | ---------- | --------------------------------------------------------------------- |
 | --bin      | Also add `bin` field                                                  |
-| --bin-mode | Use `bin` files for `main` and `types` and do not add `exports` field |
+| --bin-only | Use `bin` files for `main` and `types` and do not add `exports` field |
+
+### Command: `dev` & `build`
+
+You can use almost any typescript cli command here by using `--tsc`.
+eg: `--tsc--jsx=react` --> `--jsx react`
+
+Not allowed list: `--project` `--outDir` `--module` `--watch` and their aliases
 
 <br/>
 

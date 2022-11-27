@@ -26,3 +26,7 @@ export const cleanDir = (dir: string): void => {
     })
   })
 }
+
+export const getCommands = (...args: any[]): string => {
+  return args.filter((i) => i).join(' ')
+}

@@ -1,24 +1,16 @@
 import fs from 'fs'
 import path from 'path'
+import { srcPath } from '../config'
 
 const defaultCode = `console.log('Hello, world!');
 export default 'Hello, world!';`
 
 export default (): void => {
-  const srcPath = path.resolve('./src')
-  const srcFileJsPath = path.join(srcPath, './index.ts')
+  const srcFileJsPath = path.join(srcPath, './index.js')
   const srcFileTsPath = path.join(srcPath, './index.ts')
 
-  const srcExists = fs.existsSync(srcPath)
-  const srcFileJsExists = fs.existsSync(srcFileJsPath)
-  const srcFileTsExists = fs.existsSync(srcFileTsPath)
+  if (!fs.existsSync(srcPath)) fs.mkdirSync(srcPath, { recursive: true })
+  if (fs.existsSync(srcFileJsPath) || fs.existsSync(srcFileTsPath)) return
 
-  if (!srcExists) {
-    fs.mkdirSync(srcPath, { recursive: true })
-    return fs.writeFileSync(srcFileTsPath, defaultCode)
-  }
-
-  if (!srcFileJsExists || !srcFileTsExists) {
-    fs.writeFileSync(srcFileTsPath, defaultCode)
-  }
+  fs.writeFileSync(srcFileTsPath, defaultCode)
 }
