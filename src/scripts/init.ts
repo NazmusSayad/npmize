@@ -29,14 +29,23 @@ const writePackageJSON = (): void => {
 
   if (isOnlyBinMode) {
     pkgData.main = './dist-cjs/bin.js'
+    pkgData.module = './dist-mjs/bin.js'
     pkgData.types = './dist-cjs/bin.d.js'
   } else {
     pkgData.main = './dist-mjs/index.js'
+    pkgData.module = './dist-mjs/index.js'
     pkgData.types = './dist-mjs/index.d.js'
+
     pkgData.exports = {
       '.': {
-        require: './dist-cjs/index.js',
-        import: './dist-mjs/index.js',
+        require: {
+          path: './dist-mjs/index.js',
+          type: 'commonjs',
+        },
+        import: {
+          path: './dist-mjs/index.js',
+          type: 'module',
+        },
       },
     }
   }
