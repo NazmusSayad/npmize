@@ -1,4 +1,4 @@
-# node-ez
+# npm-ez
 
 This package tries to help you to make npm package without thinking about cjs and mjs module.
 
