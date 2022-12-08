@@ -38,14 +38,8 @@ const writePackageJSON = (): void => {
 
     pkgData.exports = {
       '.': {
-        require: {
-          path: './dist-mjs/index.js',
-          type: 'commonjs',
-        },
-        import: {
-          path: './dist-mjs/index.js',
-          type: 'module',
-        },
+        require: './dist-mjs/index.js',
+        import: './dist-mjs/index.js',
       },
     }
   }
