@@ -88,19 +88,22 @@ _This starts typescript watch mode._
 
 | Option       | Description                                                   |
 | ------------ | ------------------------------------------------------------- |
-| --node       | This enables `__dirname` and `__filename` in esmodule         |
 | --no-install | Not to install required dependencies automatically            |
 | --no-ignore  | Not to add recommended ignore files to gitignore \| npmignore |
 | --no-src     | Not to create src/index.ts folder when not exists             |
 
 ### Command: `init`
 
-| Option     | Description                                                           |
-| ---------- | --------------------------------------------------------------------- |
-| --bin      | Also add `bin` field                                                  |
-| --bin-only | Use `bin` files for `main` and `types` and do not add `exports` field |
+| Option | Description          |
+| ------ | -------------------- |
+| --bin  | Also add `bin` field |
 
 ### Command: `dev` & `build`
+
+| Option              | Description                                           |
+| ------------------- | ----------------------------------------------------- |
+| --node              | This enables `__dirname` and `__filename` in esmodule |
+| --no-module-exports | Do not copy `exports.default` => `module.exports`     |
 
 You can use almost any typescript cli command here by using `--tsc`.
 eg: `--tsc--jsx=react` --> `--jsx react`
@@ -120,8 +123,6 @@ Not allowed list: `--project` `--outDir` `--module` `--watch` and their aliases
   - If you want to know why! [`Base64`](https://www.base64decode.org) ... Hope you know.
 
 - If you don't star our github repo your wife will divorce you, Else if you don't have wife then you will never get her.
-
-- This only takes your `compilerOptions` form `tscofnig.json` not the entire `tsconfig.json` file.
 
 <br/>
 

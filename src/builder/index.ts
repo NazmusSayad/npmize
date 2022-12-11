@@ -1,26 +1,31 @@
 import fs from 'fs'
 import runCmd from './runCmd'
-import { mjsOutDir } from '../config'
+import { cjsOutDir, mjsOutDir } from '../config'
 import argv from '../argv'
 import nodeCode from './nodeCode'
-import writeTSConf from './writeTSConf'
+import moduleExports from './moduleExports'
 
 export const dev = (): void => {
-  writeTSConf()
-
-  runCmd('cjs')
-
   if (fs.existsSync(mjsOutDir)) {
     fs.rmSync(mjsOutDir, { recursive: true })
   }
+
+  runCmd(cjsOutDir, 'cjs', { watch: true })
 }
 
 export const build = (): void => {
-  writeTSConf()
+  const cjsFiles = runCmd(cjsOutDir, 'cjs')
+  const mjsFiles = runCmd(mjsOutDir, 'mjs')
 
-  runCmd('cjs')
-  runCmd('mjs')
+  if (argv.flag.node) {
+    const js_mjs = mjsFiles.filter((file) => {
+      return file.endsWith('.js') || file.endsWith('.mjs')
+    })
+    nodeCode(js_mjs)
+  }
 
-  if (!argv.flag.node) return
-  nodeCode()
+  if (!argv.flag['no-module-exports']) {
+    const js = cjsFiles.filter((file) => file.endsWith('.js'))
+    moduleExports(js)
+  }
 }

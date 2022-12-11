@@ -1,18 +1,18 @@
 {
   "name": "npm-ez",
   "description": "Let's create an npm package without worring about anything.",
-  "version": "0.0.20",
+  "version": "1.0.0",
   "bin": "./dist/index.js",
   "main": "./dist/index.js",
   "types": "./dist/index.d.js",
   "scripts": {
     "dev": "tsc -w",
     "build": "tsc",
-    "set": "yarn build && npm i -g .",
-    "test": "node bin --no-src --no-ignore build"
+    "set": "yarn build && npm i -g ."
   },
   "type": "commonjs",
   "dependencies": {
+    "@babel/parser": "^7.20.5",
     "ansi-colors": "^4.1.3",
     "node-ls-files": "^0.0.3",
     "shelljs": "^0.8.5"
@@ -32,10 +32,10 @@
   "author": "https://github.com/NazmusSayad",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NazmusSayad/npm-is-easy.git"
+    "url": "git+https://github.com/NazmusSayad/npm-ez.git"
   },
   "bugs": {
-    "url": "https://github.com/NazmusSayad/npm-is-easy/issues"
+    "url": "https://github.com/NazmusSayad/npm-ez/issues"
   },
-  "homepage": "https://github.com/NazmusSayad/npm-is-easy#readme"
+  "homepage": "https://github.com/NazmusSayad/npm-ez#readme"
 }

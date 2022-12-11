@@ -1,4 +1,5 @@
 import path from 'path'
+import { tscOptPrefix } from './config'
 
 const argvList = [...process.argv]
 const argv: {} | any = {
@@ -27,3 +28,12 @@ argvList.forEach((arg) => {
 })
 
 export default argv
+export const tscOptions: string[] = []
+
+for (let key in argv.flag) {
+  const value = argv.flag[key]
+  if (!key.startsWith(tscOptPrefix)) continue
+
+  const tscKey = key.slice(tscOptPrefix.length)
+  tscKey && tscOptions.push(tscKey, value)
+}

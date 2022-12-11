@@ -1,22 +1,17 @@
 import shell from 'shelljs'
-import argv from '../argv'
-import writeType from './writeType'
-import { getCommands } from '../utils/utils'
-import { mjsOutDir, cjsOutDir, tscOptPrefix } from '../config'
+import ls from 'node-ls-files'
+import { tscOptions } from '../argv'
+import { cleanDir, getCommands } from '../utils/utils'
+import writePkgJson from './writePkgJson'
 
-const tscOptions: string[] = []
-for (let key in argv.flag) {
-  const value = argv.flag[key]
-  if (!key.startsWith(tscOptPrefix)) continue
-
-  const tscKey = key.slice(tscOptPrefix.length)
-  tscKey && tscOptions.push(tscKey, value)
-}
-
-export default (type: 'cjs' | 'mjs'): void => {
-  const watch = argv.cmd === 'dev'
-  const outDir = type === 'cjs' ? cjsOutDir : mjsOutDir
-  writeType(outDir, type === 'cjs' ? 'commonjs' : 'module')
+type Options = { [index: string]: any }
+export default (
+  outDir: string,
+  type: 'cjs' | 'mjs',
+  { watch = false, clean = true, writePkg = true }: Options = {}
+): string[] => {
+  clean && cleanDir(outDir)
+  writePkg && writePkgJson(outDir, type)
 
   const commands = getCommands(
     'tsc',
@@ -24,8 +19,9 @@ export default (type: 'cjs' | 'mjs'): void => {
     '--project .',
     `--outDir ${outDir}`,
     `--module ${type === 'cjs' ? 'commonjs' : 'es6'}`,
-    `--watch ${watch}`
+    watch && '--watch'
   )
 
   shell.exec(commands, { async: watch })
+  return watch ? [] : ls.sync(outDir)
 }

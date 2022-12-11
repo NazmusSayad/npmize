@@ -2,10 +2,6 @@ import fs from 'fs'
 import path from 'path'
 import ac from 'ansi-colors'
 
-export const getPackagePath = () => {
-  return path.resolve('./package.json')
-}
-
 export const writeJOSN = (path: string, data: {}): void => {
   fs.writeFileSync(path, JSON.stringify(data, null, '\t'))
 }
