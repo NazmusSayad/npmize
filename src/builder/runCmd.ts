@@ -8,7 +8,7 @@ type Options = { [index: string]: any }
 export default (
   outDir: string,
   type: 'cjs' | 'mjs',
-  { watch = false, clean = true, writePkg = true }: Options = {}
+  { watch = false, clean = true, writePkg = true, files = false }: Options = {}
 ): string[] => {
   clean && cleanDir(outDir)
   writePkg && writePkgJson(outDir, type)
@@ -23,5 +23,5 @@ export default (
   )
 
   shell.exec(commands, { async: watch })
-  return watch ? [] : ls.sync(outDir)
+  return files && ls.sync(outDir)
 }

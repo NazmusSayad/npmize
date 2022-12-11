@@ -100,10 +100,9 @@ _This starts typescript watch mode._
 
 ### Command: `dev` & `build`
 
-| Option              | Description                                           |
-| ------------------- | ----------------------------------------------------- |
-| --node              | This enables `__dirname` and `__filename` in esmodule |
-| --no-module-exports | Do not copy `exports.default` => `module.exports`     |
+| Option | Description                                           |
+| ------ | ----------------------------------------------------- |
+| --node | This enables `__dirname` and `__filename` in esmodule |
 
 You can use almost any typescript cli command here by using `--tsc`.
 eg: `--tsc--jsx=react` --> `--jsx react`
