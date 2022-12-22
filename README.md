@@ -8,8 +8,6 @@ This package tries to help you to make npm package without thinking about cjs an
 - Very very simple.
 - Very very lightweight.
 - This supports `typescript`.
-- Source code can be writted in `cjs` or `mjs`(esmodule)
-- Compiles into only `cjs` in dev mode and both `cjs` and `mjs`(esmodule) in build mode.
 - Enables `__dirname` and `__filename` for `mjs`(esmodule).
 
 <a href="https://npmjs.com/package/npm-ez">
@@ -100,14 +98,27 @@ _This starts typescript watch mode._
 
 ### Command: `dev` & `build`
 
-| Option | Description                                           |
-| ------ | ----------------------------------------------------- |
-| --node | This enables `__dirname` and `__filename` in esmodule |
-
 You can use almost any typescript cli command here by using `--tsc`.
 eg: `--tsc--jsx=react` --> `--jsx react`
 
 Not allowed list: `--project` `--outDir` `--module` `--watch` and their aliases
+
+<br/>
+
+### Command: `dev`
+
+| Option       | Description                             |
+| ------------ | --------------------------------------- |
+| --module=cjs | This starts dev mode of commonjs module |
+| --module=mjs | This starts dev mode of esmodule module |
+
+<br/>
+
+### Command: `build`
+
+| Option | Description                                           |
+| ------ | ----------------------------------------------------- |
+| --node | This enables `__dirname` and `__filename` in esmodule |
 
 <br/>
 
@@ -117,6 +128,7 @@ Not allowed list: `--project` `--outDir` `--module` `--watch` and their aliases
 
 ## **Note:**
 
+- You should use --module=cjs with dev mode when working with packages for node because `__dirname` and `__filename` isn't supported in esmodule in dev mode
 - Do not use `VGhpcyBuYW1lIGlzIGFscmVhZHkgdXNlZCB0byBlbmFibGUgX19kaXJuYW1lIGFuZCBfX2ZpbGVuYW1lIDop` as a variable name in your top level code.
 
   - If you want to know why! [`Base64`](https://www.base64decode.org) ... Hope you know.

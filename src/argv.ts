@@ -2,7 +2,14 @@ import path from 'path'
 import { tscOptPrefix } from './config'
 
 const argvList = [...process.argv]
-const argv: {} | any = {
+const argv: {
+  node?: string
+  script?: string
+  cmd: string
+  isLocal: boolean
+  flag
+  sFlag
+} = {
   node: argvList.shift(),
   script: argvList.shift(),
   isLocal: process.argv[1].startsWith(path.resolve('./node_modules')),
