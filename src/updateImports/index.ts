@@ -1,23 +1,20 @@
 import fs from 'fs'
-import { getDataParts, getParsedBody } from './utils'
+import * as babel from '@babel/parser'
+import { getDataParts, NodeType } from './utils'
 import * as node from './node.js'
 
-const getImports = (filePath: string, fileData: string, cb) => {
-  const parsed = getParsedBody(filePath, fileData)
-  const found = [
+const getImports = (parsed: any) => {
+  return [
     ...node.CallExpressionImport(parsed),
     ...node.TSImportType(parsed),
     ...node.ImportDeclaration_ExportNamedDeclaration_ExportAllDeclaration(
       parsed
     ),
   ]
-  return getDataParts(fileData, found, cb)
 }
 
-const getRequires = (filePath: string, fileData: string, cb) => {
-  const parsed = getParsedBody(filePath, fileData)
-  const found = node.CallExpressionRequire(parsed)
-  return getDataParts(fileData, found, cb)
+const getRequires = (parsed: any) => {
+  return node.CallExpressionRequire(parsed)
 }
 
 export default (type: 'm' | 'c', files: string[]) => {
@@ -29,13 +26,26 @@ export default (type: 'm' | 'c', files: string[]) => {
       })
     })
 
-    const newCodeParserFn =
+    const parsedBody = babel.parse(fileData, {
+      sourceType: 'module',
+      plugins: ['typescript'],
+      sourceFilename: filePath,
+    }).program.body
+
+    const found: NodeType[] = (
       filePath.endsWith('.ts') || type === 'm' ? getImports : getRequires
-    const newData = newCodeParserFn(filePath, fileData, (node) => {
-      return 'Hello world!!!'
+    )(parsedBody)
+
+    const dataParts = getDataParts(fileData, found, (node: NodeType) => {
+      const ext = `.${type}js`
+      const jsRegex = /\.js$/gim
+
+      return jsRegex.test(node.value)
+        ? node.value.replace(jsRegex, ext)
+        : node.value + ext
     })
 
     fs.rmSync(filePath)
-    fs.writeFileSync(newFilePath, newData)
+    fs.writeFileSync(newFilePath, dataParts.join(''))
   })
 }

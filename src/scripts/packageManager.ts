@@ -8,9 +8,9 @@ import { packageJsonPath } from '../config.js'
 const requiredPackages = ['typescript']
 
 const getPkgManagerCore = (
-  npm,
-  yarn,
-  pnpm
+  npm: string,
+  yarn: string,
+  pnpm: string
 ): 'npm' | 'yarn' | 'pnpm' | false => {
   const npmRef = fs.existsSync(npm)
   const yarnRef = fs.existsSync(yarn)

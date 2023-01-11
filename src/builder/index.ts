@@ -23,11 +23,11 @@ export const dev = (): void => {
 
 export const build = (): void => {
   const cjsFiles = runCmd(cjsOutDir, 'cjs', {
-    writePkg: argv.flag.lagecy,
+    writePkg: argv.isLegacy,
     files: true,
   })
   const mjsFiles = runCmd(mjsOutDir, 'mjs', {
-    writePkg: argv.flag.lagecy,
+    writePkg: argv.isLegacy,
     files: true,
   })
 
@@ -39,7 +39,7 @@ export const build = (): void => {
     )
   }
 
-  if (!argv.flag.lagecy) {
+  if (!argv.isLegacy) {
     updateImports('c', cjsFiles)
     updateImports('m', mjsFiles)
   }

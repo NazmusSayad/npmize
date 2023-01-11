@@ -1,40 +1,36 @@
-import * as babel from '@babel/parser'
-
-export const getDataParts = (fileData: string, found: NodeType[], cb) => {
-  let increment = 0
-  let newFileData = fileData
-
-  found.forEach((node) => {
-    node.end += increment
-    node.start += increment
-
-    const newValue: string = cb(node)
-    const firstPart = newFileData.slice(0, node.start)
-    const lastPart = newFileData.slice(node.end, Infinity)
-
-    if (!newValue) throw new Error('Invalid path')
-    increment += newValue.length - node.value.length
-    newFileData = firstPart + `"${newValue}"` + lastPart
-  })
-
-  return newFileData
+export interface CallBackFn {
+  (node: NodeType): string
 }
 
-export const getParsedBody = (filePath: string, fileData: string) => {
-  const parsed = babel.parse(fileData, {
-    sourceType: 'module',
-    plugins: ['typescript'],
-    sourceFilename: filePath,
+export const getDataParts = (
+  fileData: string,
+  found: NodeType[],
+  cb: CallBackFn
+) => {
+  const newEntries: NodeType[] = [
+    { start: 0, end: 0, value: '', rawValue: '', filename: '' },
+    ...found.sort((a, b) => a.start - b.start),
+  ]
+
+  const chunks = newEntries.map((node, i, arr) => {
+    const nextNode = arr[i + 1]
+    const nodeEnd = node.end
+    const nextNodeEnd = nextNode ? nextNode.start : Infinity
+
+    const str = fileData.slice(nodeEnd, nextNodeEnd)
+    if (!nextNode) return str
+
+    return [str, `"${cb(nextNode) ?? nextNode.value}"`]
   })
 
-  return parsed.program.body
+  return chunks.flat()
 }
 
-export const isOkString = (a): Boolean => {
+export const isOkString = (a: any): Boolean => {
   return a && a.type === 'StringLiteral' && a.value.startsWith('.')
 }
 
-export const parseString = (str): NodeType => ({
+export const parseString = (str: any): NodeType => ({
   start: str.start,
   end: str.end,
   value: str.value,

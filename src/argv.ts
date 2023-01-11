@@ -3,20 +3,24 @@ import { tscOptPrefix } from './config'
 
 const argvList = [...process.argv]
 const argv: {
-  node?: string
-  script?: string
+  node: string
+  script: string
   cmd: string
   isLocal: boolean
-  flag
-  sFlag
+  isLegacy: boolean
+  flag: { [index: string]: string | boolean | number }
+  sFlag: { [index: string]: string | boolean | number }
 } = {
-  node: argvList.shift(),
-  script: argvList.shift(),
+  node: argvList.shift()!,
+  script: argvList.shift()!,
   isLocal: process.argv[1].startsWith(path.resolve('./node_modules')),
+  isLegacy: false,
   cmd: '',
   flag: {},
   sFlag: {},
 }
+
+argv.isLegacy = Boolean(argv.flag.legacy)
 
 const parseFlag = (arg: string): void => {
   const [key, value = true] = arg.split('=')
@@ -42,5 +46,5 @@ for (let key in argv.flag) {
   if (!key.startsWith(tscOptPrefix)) continue
 
   const tscKey = key.slice(tscOptPrefix.length)
-  tscKey && tscOptions.push(tscKey, value)
+  tscKey && tscOptions.push(tscKey, value as string)
 }

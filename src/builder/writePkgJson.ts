@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-export default (dir, type) => {
+export default (dir: string, type: 'cjs' | 'mjs') => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true })
   }

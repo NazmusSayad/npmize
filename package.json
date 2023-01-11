@@ -1,14 +1,14 @@
 {
   "name": "npm-ez",
   "description": "Let's create an npm package without worring about anything.",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "bin": "./dist/index.js",
   "main": "./dist/index.js",
   "types": "./dist/index.d.js",
   "scripts": {
     "dev": "tsc -w",
     "build": "tsc",
-    "set": "yarn build && npm i -g ."
+    "test": "rm node_modules -rf;yarn add -D ../npm-ez;clear;npm-ez"
   },
   "type": "commonjs",
   "dependencies": {
@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@types/node": "^18.11.9",
+    "@types/shelljs": "^0.8.11",
     "typescript": "^4.8.4"
   },
   "keywords": [

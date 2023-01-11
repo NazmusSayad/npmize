@@ -8,7 +8,7 @@ export const TSImportType = (parsed: any): NodeType[] => {
 }
 
 export const ImportDeclaration_ExportNamedDeclaration_ExportAllDeclaration = (
-  parsed
+  parsed: any
 ) => {
   return [
     findNestedItems(parsed, 'type', 'ImportDeclaration'),
@@ -17,14 +17,11 @@ export const ImportDeclaration_ExportNamedDeclaration_ExportAllDeclaration = (
     findNestedItems(parsed, 'type', 'ExportAllDeclaration'),
   ]
     .flat()
-    .filter((node) => {
-      if (isOkString(node.source)) return true
-      console.log(node)
-    })
+    .filter((node) => isOkString(node.source))
     .map((node) => parseString(node.source))
 }
 
-export const CallExpressionImport = (parsed) => {
+export const CallExpressionImport = (parsed: any) => {
   return findNestedItems(parsed, 'type', 'CallExpression')
     .filter(
       (node) => node.callee?.type === 'Import' && isOkString(node.arguments[0])
@@ -32,7 +29,7 @@ export const CallExpressionImport = (parsed) => {
     .map((node) => parseString(node.arguments[0]))
 }
 
-export const CallExpressionRequire = (parsed) => {
+export const CallExpressionRequire = (parsed: any) => {
   return findNestedItems(parsed, 'type', 'CallExpression')
     .filter(
       (node) =>

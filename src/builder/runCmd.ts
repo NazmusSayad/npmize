@@ -22,6 +22,7 @@ export default (
     'tsc',
     ...tscOptions,
     '--project .',
+    "--baseUrl ' '",
     `--outDir ${outDir}`,
     `--module ${type === 'cjs' ? 'CommonJS' : 'ESNext'}`,
     watch && '--watch'

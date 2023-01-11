@@ -18,7 +18,7 @@ export const readJOSN = (path: string): any => {
   }
 }
 
-export const deleteDir = (dir) => {
+export const deleteDir = (dir: string) => {
   if (!fs.existsSync(dir)) return
   fs.rmSync(dir, { recursive: true })
 }
