@@ -2,7 +2,7 @@ export interface CallBackFn {
   (node: NodeType): string
 }
 
-export const getDataParts = (
+export const getUpdatedData = (
   fileData: string,
   found: NodeType[],
   cb: CallBackFn
@@ -23,7 +23,7 @@ export const getDataParts = (
     return [str, `"${cb(nextNode) ?? nextNode.value}"`]
   })
 
-  return chunks.flat()
+  return chunks.flat().join('')
 }
 
 export const isOkString = (a: any): Boolean => {

@@ -1,7 +1,7 @@
 import fs from 'fs'
 import * as babel from '@babel/parser'
-import { getDataParts, NodeType } from './utils'
 import * as node from './node.js'
+import { getUpdatedData, NodeType } from './utils'
 
 const getImports = (parsed: any) => {
   return [
@@ -17,14 +17,9 @@ const getRequires = (parsed: any) => {
   return node.CallExpressionRequire(parsed)
 }
 
-export default (type: 'm' | 'c', files: string[]) => {
+export default (type: 'mjs' | 'cjs', files: string[]) => {
   files.forEach((filePath) => {
     const fileData = fs.readFileSync(filePath, 'utf-8')
-    const newFilePath = filePath.replace(/\.(js|ts)$/, (match) => {
-      return match.replace(/js|ts/, (m) => {
-        return type + m
-      })
-    })
 
     const parsedBody = babel.parse(fileData, {
       sourceType: 'module',
@@ -33,11 +28,11 @@ export default (type: 'm' | 'c', files: string[]) => {
     }).program.body
 
     const found: NodeType[] = (
-      filePath.endsWith('.ts') || type === 'm' ? getImports : getRequires
+      filePath.endsWith('.ts') || type === 'mjs' ? getImports : getRequires
     )(parsedBody)
 
-    const dataParts = getDataParts(fileData, found, (node: NodeType) => {
-      const ext = `.${type}js`
+    const dataParts = getUpdatedData(fileData, found, (node: NodeType) => {
+      const ext = `.${type[0]}js`
       const jsRegex = /\.js$/gim
 
       return jsRegex.test(node.value)
@@ -45,7 +40,11 @@ export default (type: 'm' | 'c', files: string[]) => {
         : node.value + ext
     })
 
+    const newFilePath = filePath.replace(/\.(js|ts)$/, (match) => {
+      return match.replace(/js|ts/, (m) => type[0] + m)
+    })
+
     fs.rmSync(filePath)
-    fs.writeFileSync(newFilePath, dataParts.join(''))
+    fs.writeFileSync(newFilePath, dataParts)
   })
 }

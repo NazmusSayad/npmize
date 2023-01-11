@@ -40,7 +40,7 @@ export const build = (): void => {
   }
 
   if (!argv.isLegacy) {
-    updateImports('c', cjsFiles)
-    updateImports('m', mjsFiles)
+    updateImports('cjs', cjsFiles)
+    updateImports('mjs', mjsFiles)
   }
 }

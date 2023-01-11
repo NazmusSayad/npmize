@@ -20,8 +20,6 @@ const argv: {
   sFlag: {},
 }
 
-argv.isLegacy = Boolean(argv.flag.legacy)
-
 const parseFlag = (arg: string): void => {
   const [key, value = true] = arg.split('=')
   argv.flag[key] = value
@@ -48,3 +46,5 @@ for (let key in argv.flag) {
   const tscKey = key.slice(tscOptPrefix.length)
   tscKey && tscOptions.push(tscKey, value as string)
 }
+
+argv.isLegacy = Boolean(argv.flag.legacy)
