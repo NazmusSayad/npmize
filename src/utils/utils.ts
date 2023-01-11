@@ -37,3 +37,19 @@ export const cleanDir = (dir: string): void => {
 export const getCommands = (...args: any[]): string => {
   return args.filter((i) => i).join(' ')
 }
+
+export const findNestedItems = (
+  entireObj: any,
+  keyToFind: string,
+  valToFind: string | number | unknown
+) => {
+  let foundObj: any[] = []
+
+  JSON.stringify(entireObj, (_, nestedValue) => {
+    const found = nestedValue && nestedValue[keyToFind] === valToFind
+    found && foundObj.push(nestedValue)
+    return nestedValue
+  })
+
+  return foundObj
+}

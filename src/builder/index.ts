@@ -4,6 +4,7 @@ import { cjsOutDir, mjsOutDir } from '../config'
 import argv from '../argv'
 import nodeCode from './nodeCode'
 import { deleteDir } from '../utils/utils'
+import updateImports from '../updateImports'
 
 export const dev = (): void => {
   deleteDir(cjsOutDir)
@@ -14,17 +15,32 @@ export const dev = (): void => {
     process.exit(1)
   }
 
-  runCmd(m === 'cjs' ? cjsOutDir : mjsOutDir, m, { watch: true })
+  runCmd(m === 'cjs' ? cjsOutDir : mjsOutDir, m, {
+    watch: true,
+    writePkg: true,
+  })
 }
 
 export const build = (): void => {
-  runCmd(cjsOutDir, 'cjs')
-  const mjsFiles = runCmd(mjsOutDir, 'mjs', { files: true })
+  const cjsFiles = runCmd(cjsOutDir, 'cjs', {
+    writePkg: argv.flag.lagecy,
+    files: true,
+  })
+  const mjsFiles = runCmd(mjsOutDir, 'mjs', {
+    writePkg: argv.flag.lagecy,
+    files: true,
+  })
 
   if (argv.flag.node) {
-    const js_mjs = mjsFiles.filter((file) => {
-      return file.endsWith('.js') || file.endsWith('.mjs')
-    })
-    nodeCode(js_mjs)
+    nodeCode(
+      mjsFiles.filter((file) => {
+        return file.endsWith('.js') || file.endsWith('.mjs')
+      })
+    )
+  }
+
+  if (!argv.flag.lagecy) {
+    updateImports('c', cjsFiles)
+    updateImports('m', mjsFiles)
   }
 }

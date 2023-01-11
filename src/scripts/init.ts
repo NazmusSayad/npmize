@@ -13,7 +13,9 @@ export const writeTSConfig = (): void => {
     (finalConf.compilerOptions ??= {}),
     readJOSN(defaultTSConfigPath).compilerOptions ?? {}
   )
-  finalConf.include = ['src']
+  finalConf.include = argv.flag.lagecy
+    ? ['src']
+    : ['src/**/*.js', 'src/**/*.jsx', 'src/**/*.ts', 'src/**/*.tsx']
 
   writeJOSN(userTSConfigPath, finalConf)
 }
@@ -22,7 +24,6 @@ const writePackageJSON = (): void => {
   const pkgData = readJOSN(packageJsonPath)
 
   pkgData.scripts ||= {}
-  pkgData.type = 'commonjs'
   pkgData.scripts.dev = 'npm-ez dev'
   pkgData.scripts.build = 'npm-ez build'
 

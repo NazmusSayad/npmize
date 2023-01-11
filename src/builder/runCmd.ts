@@ -4,13 +4,18 @@ import { tscOptions } from '../argv'
 import { cleanDir, getCommands } from '../utils/utils'
 import writePkgJson from './writePkgJson'
 
-type Options = { [index: string]: any }
+type Options = {
+  watch?: boolean
+  writePkg?: boolean
+  files?: boolean
+}
+
 export default (
   outDir: string,
   type: 'cjs' | 'mjs',
-  { watch = false, clean = true, writePkg = true, files = false }: Options = {}
+  { watch = false, writePkg, files }: Options = {}
 ): string[] => {
-  clean && cleanDir(outDir)
+  cleanDir(outDir)
   writePkg && writePkgJson(outDir, type)
 
   const commands = getCommands(
@@ -18,10 +23,10 @@ export default (
     ...tscOptions,
     '--project .',
     `--outDir ${outDir}`,
-    `--module ${type === 'cjs' ? 'commonjs' : 'es6'}`,
+    `--module ${type === 'cjs' ? 'CommonJS' : 'ESNext'}`,
     watch && '--watch'
   )
 
   shell.exec(commands, { async: watch })
-  return files && ls.sync(outDir)
+  return (files && ls.sync(outDir)) as any
 }

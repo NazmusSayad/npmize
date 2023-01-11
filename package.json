@@ -12,6 +12,7 @@
   },
   "type": "commonjs",
   "dependencies": {
+    "@babel/parser": "^7.20.7",
     "ansi-colors": "^4.1.3",
     "node-ls-files": "^0.0.3",
     "shelljs": "^0.8.5"
