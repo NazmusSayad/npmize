@@ -92,9 +92,10 @@ _This starts typescript watch mode._
 
 ### Command: `init`
 
-| Option | Description          |
-| ------ | -------------------- |
-| --bin  | Also add `bin` field |
+| Option   | Description           |
+| -------- | --------------------- |
+| --bin    | Also add `bin` field  |
+| --legacy | Uses `.js` for fields |
 
 ### Command: `dev` & `build`
 
@@ -116,9 +117,10 @@ Not allowed list: `--project` `--outDir` `--module` `--watch` and their aliases
 
 ### Command: `build`
 
-| Option | Description                                           |
-| ------ | ----------------------------------------------------- |
-| --node | This enables `__dirname` and `__filename` in esmodule |
+| Option   | Description                                           |
+| -------- | ----------------------------------------------------- |
+| --node   | This enables `__dirname` and `__filename` in esmodule |
+| --legacy | Uses `.js` files and creates package.json with type   |
 
 <br/>
 
