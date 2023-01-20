@@ -1,10 +1,10 @@
 import ac from 'ansi-colors'
-import argv from './argv.js'
-import init from './scripts/init.js'
-import ignore from './scripts/ignoreData.js'
-import makeSrc from './scripts/makeSrc.js'
-import packageManager from './scripts/packageManager.js'
-import * as builder from './builder'
+import argv from './argv'
+import init from './scripts/init'
+import ignore from './scripts/ignoreData'
+import makeSrc from './scripts/makeSrc'
+import packageManager from './scripts/packageManager'
+import * as builder from './builder/index'
 
 argv.flag['no-install'] || packageManager()
 argv.flag['no-ignore'] || ignore()

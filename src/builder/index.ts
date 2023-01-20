@@ -4,10 +4,12 @@ import { cjsOutDir, mjsOutDir } from '../config'
 import argv from '../argv'
 import nodeCode from './nodeCode'
 import { deleteDir } from '../utils/utils'
+import updateImports from '../updateImports'
 
 export const dev = (): void => {
   deleteDir(cjsOutDir)
   deleteDir(mjsOutDir)
+
   const m = argv.flag.module ?? 'cjs'
   if (m !== 'cjs' && m !== 'mjs') {
     console.warn(ac.yellow(`Invalid module '${m}'`))
@@ -18,13 +20,19 @@ export const dev = (): void => {
 }
 
 export const build = (): void => {
-  runCmd(cjsOutDir, 'cjs')
-  const mjsFiles = runCmd(mjsOutDir, 'mjs', { files: true })
+  const options = { files: true, writePkg: argv.isLegacy }
+  const cjsFiles = runCmd(cjsOutDir, 'cjs', options)
+  const mjsFiles = runCmd(mjsOutDir, 'mjs', options)
 
   if (argv.flag.node) {
-    const js_mjs = mjsFiles.filter((file) => {
+    const jsMjs = mjsFiles.filter((file) => {
       return file.endsWith('.js') || file.endsWith('.mjs')
     })
-    nodeCode(js_mjs)
+    nodeCode(jsMjs)
+  }
+
+  if (!argv.isLegacy) {
+    updateImports('cjs', cjsFiles)
+    updateImports('mjs', mjsFiles)
   }
 }

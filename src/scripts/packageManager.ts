@@ -2,9 +2,9 @@ import fs from 'fs'
 import path from 'path'
 import shell from 'shelljs'
 import ac from 'ansi-colors'
-import argv from '../argv.js'
-import { readJOSN } from '../utils/utils.js'
-import { packageJsonPath } from '../config.js'
+import argv from '../argv'
+import { readJOSN } from '../utils/utils'
+import { packageJsonPath } from '../config'
 const requiredPackages = ['typescript']
 
 const getPkgManagerCore = (

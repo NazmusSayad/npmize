@@ -5,6 +5,7 @@ import ac from 'ansi-colors'
 export const writeJOSN = (path: string, data: {}): void => {
   fs.writeFileSync(path, JSON.stringify(data, null, '\t'))
 }
+
 export const readJOSN = (path: string): any => {
   try {
     return JSON.parse(fs.readFileSync(path, 'utf8'))
@@ -36,4 +37,14 @@ export const cleanDir = (dir: string): void => {
 
 export const getCommands = (...args: any[]): string => {
   return args.filter((i) => i).join(' ')
+}
+
+export const findNestedItems = (entireObj, keyToFind, valToFind) => {
+  const foundObj: any[] = []
+  JSON.stringify(entireObj, (_, nestedValue) => {
+    const found = nestedValue && nestedValue[keyToFind] === valToFind
+    found && foundObj.push(nestedValue)
+    return nestedValue
+  })
+  return foundObj
 }
