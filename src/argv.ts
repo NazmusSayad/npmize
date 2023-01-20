@@ -9,6 +9,7 @@ const argv: {
   isLocal: boolean
   flag
   sFlag
+  isLegacy: boolean
 } = {
   node: argvList.shift(),
   script: argvList.shift(),
@@ -16,6 +17,7 @@ const argv: {
   cmd: '',
   flag: {},
   sFlag: {},
+  isLegacy: false,
 }
 
 const parseFlag = (arg: string): void => {
@@ -44,3 +46,5 @@ for (let key in argv.flag) {
   const tscKey = key.slice(tscOptPrefix.length)
   tscKey && tscOptions.push(tscKey, value)
 }
+
+argv.isLegacy = Boolean(argv.flag.legacy)

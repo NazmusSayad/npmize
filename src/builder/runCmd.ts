@@ -8,9 +8,9 @@ type Options = { [index: string]: any }
 export default (
   outDir: string,
   type: 'cjs' | 'mjs',
-  { watch = false, clean = true, writePkg = true, files = false }: Options = {}
+  { watch = false, writePkg = true, files = false }: Options
 ): string[] => {
-  clean && cleanDir(outDir)
+  cleanDir(outDir)
   writePkg && writePkgJson(outDir, type)
 
   const commands = getCommands(
