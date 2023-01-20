@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "skipLibCheck": true,
+    "declaration": true,
+    "strict": true,
+    "pretty": true,
+    "removeComments": true
+  }
+}
