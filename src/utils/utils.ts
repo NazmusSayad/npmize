@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import ac from 'ansi-colors'
+import argv from '../argv'
 
 export const writeJOSN = (path: string, data: {}): void => {
   fs.writeFileSync(path, JSON.stringify(data, null, '\t'))
@@ -47,4 +48,17 @@ export const findNestedItems = (entireObj, keyToFind, valToFind) => {
     return nestedValue
   })
   return foundObj
+}
+
+export function getModule<T extends 'cjs' | 'mjs' | undefined>(
+  fallback?: T
+): T extends undefined ? 'cjs' | 'mjs' | undefined : 'cjs' | 'mjs' {
+  const m = argv.flag.module ?? fallback
+
+  if (m && m !== 'cjs' && m !== 'mjs') {
+    console.warn(ac.yellow(`Invalid module '${m}'`))
+    process.exit(1)
+  }
+
+  return m
 }

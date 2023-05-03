@@ -104,10 +104,6 @@ eg: `--tsc--jsx=react` --> `--jsx react`
 
 Not allowed list: `--project` `--outDir` `--module` `--watch` and their aliases
 
-<br/>
-
-### Command: `dev`
-
 | Option       | Description                             |
 | ------------ | --------------------------------------- |
 | --module=cjs | This starts dev mode of commonjs module |
