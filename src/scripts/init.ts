@@ -1,10 +1,10 @@
-import argv from '../argv'
-import { writeJOSN, readJOSN } from '../utils/utils'
 import {
   defaultTSConfigPath,
   packageJsonPath,
   userTSConfigPath,
 } from '../config'
+import argv from '../argv'
+import { writeJOSN, readJOSN, getDirName } from '../utils/utils'
 
 export const writeTSConfig = (): void => {
   const finalConf = readJOSN(userTSConfigPath)
@@ -24,6 +24,9 @@ const writePackageJSON = (): void => {
   const cjsRoot = getPath('./dist-cjs/index', 'js', 'cjs')
   const mjsRoot = getPath('./dist-mjs/index', 'js', 'mjs')
   const typesRoot = getPath('./dist-mjs/index', 'ts', 'mts')
+
+  pkgData.name ??= getDirName()
+  pkgData.version ??= '0.0.0'
 
   pkgData.scripts ??= {}
   pkgData.scripts.dev = 'npm-ez dev'

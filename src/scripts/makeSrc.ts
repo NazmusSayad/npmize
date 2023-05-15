@@ -1,18 +1,18 @@
 import fs from 'fs'
 import path from 'path'
-import { srcPath } from '../config'
+import { srcDir } from '../config'
 
 const defaultCode = `console.log('Hello, world!');
 export default 'Hello, world!';`
 
 export default (): void => {
-  const srcFileTsPath = path.join(srcPath, './index.ts')
-  if (!fs.existsSync(srcPath)) fs.mkdirSync(srcPath, { recursive: true })
+  const srcFileTsPath = path.join(srcDir, './index.ts')
+  if (!fs.existsSync(srcDir)) fs.mkdirSync(srcDir, { recursive: true })
 
   if (
-    fs.existsSync(path.join(srcPath, './index.js')) ||
-    fs.existsSync(path.join(srcPath, './index.jsx')) ||
-    fs.existsSync(path.join(srcPath, './index.tsx')) ||
+    fs.existsSync(path.join(srcDir, './index.js')) ||
+    fs.existsSync(path.join(srcDir, './index.jsx')) ||
+    fs.existsSync(path.join(srcDir, './index.tsx')) ||
     fs.existsSync(srcFileTsPath)
   ) {
     return

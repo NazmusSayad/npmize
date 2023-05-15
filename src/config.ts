@@ -1,6 +1,7 @@
 import path from 'path'
 
-export const srcPath = path.resolve('./src')
+export const rootDir = path.resolve('.')
+export const srcDir = path.resolve('./src')
 export const mjsOutDir = path.resolve('./dist-mjs')
 export const cjsOutDir = path.resolve('./dist-cjs')
 

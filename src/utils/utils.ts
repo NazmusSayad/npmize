@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import ac from 'ansi-colors'
 import argv from '../argv'
+import { rootDir } from '../config'
 
 export const writeJOSN = (path: string, data: {}): void => {
   fs.writeFileSync(path, JSON.stringify(data, null, '\t'))
@@ -61,4 +62,8 @@ export function getModule<T extends 'cjs' | 'mjs' | undefined>(
   }
 
   return m
+}
+
+export function getDirName() {
+  return path.basename(rootDir)
 }
