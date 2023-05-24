@@ -1,4 +1,5 @@
 import fs from 'fs'
+import path from 'path'
 import * as babel from '@babel/parser'
 import * as utils from './utils'
 import * as node from './node'
@@ -18,31 +19,31 @@ const getRequires = (parsed) => {
 }
 
 export default (type, files) => {
+  const ext = '.' + type
+
   files.forEach((filePath) => {
-    const fileData = fs.readFileSync(filePath, 'utf-8')
-    const parsedBody = babel.parse(fileData, {
+    const dirPath = path.dirname(filePath)
+    const data = fs.readFileSync(filePath, 'utf-8')
+    const parsedBody = babel.parse(data, {
       sourceType: 'module',
       plugins: ['typescript'],
       sourceFilename: filePath,
     }).program.body
 
-    const foundFn =
-      filePath.endsWith('.ts') || type === 'mjs' ? getImports : getRequires
-    const found = foundFn(parsedBody)
+    const foundFilePaths =
+      filePath.endsWith('.ts') || type === 'mjs'
+        ? getImports(parsedBody)
+        : getRequires(parsedBody)
 
-    const dataParts = utils.getUpdatedData(fileData, found, (node) => {
-      const ext = `.${type[0]}js`
-      const jsRegex = /\.js$/gim
-      return jsRegex.test(node.value)
-        ? node.value.replace(jsRegex, ext)
-        : node.value + ext
-    })
+    const updatedData = utils.getUpdatedData(data, foundFilePaths, (node) => {
+      const shortPath = node.value.replace(/\.js$/i, '')
+      const fullPath = path.join(dirPath, node.value)
 
-    const newFilePath = filePath.replace(/\.(js|ts)$/, (match) => {
-      return match.replace(/js|ts/, (m) => type[0] + m)
+      const isExists = utils.isFileExists(files, fullPath)
+      return isExists ? shortPath + ext : shortPath + '/index' + ext
     })
 
     fs.rmSync(filePath)
-    fs.writeFileSync(newFilePath, dataParts)
+    fs.writeFileSync(utils.getNewFilePath(filePath, type), updatedData)
   })
 }

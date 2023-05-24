@@ -1,3 +1,6 @@
+import fs from 'fs'
+import path from 'path'
+
 export const getUpdatedData = (fileData, found, cb) => {
   const newEntries = [
     { start: 0, end: 0, value: '', rawValue: '', filename: '' },
@@ -28,3 +31,19 @@ export const parseString = (str) => ({
   rawValue: str.extra.raw,
   filename: str.loc.filename,
 })
+
+export const isFileExists = (files: string[], target: string) => {
+  return (
+    files.includes(target) ||
+    files.includes(target + '.js') ||
+    files.includes(target + '.ts')
+  )
+}
+
+export function getNewFilePath(filePath: string, type: 'cjs' | 'mjs') {
+  const prefix = type[0]
+
+  return filePath.replace(/\.(js|ts)$/, (match) => {
+    return match.replace(/(js|ts)/i, (m) => prefix + m)
+  })
+}
