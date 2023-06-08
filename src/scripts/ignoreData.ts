@@ -1,5 +1,6 @@
-import fs from 'fs'
-const fileInfo = [
+import fs, { readFileSync } from 'fs'
+const heading = '# npm-ez'
+const ignoreTexts = [
   {
     path: './.gitignore',
     lines: ['node_modules', 'dist-cjs', 'dist-mjs'],
@@ -17,16 +18,28 @@ const fileInfo = [
   },
 ]
 
+function writeNewFile({ path, lines }) {
+  const text = [heading, ...lines].join('\n')
+  fs.writeFileSync(path, text)
+}
+
+function updateIgnoreFile({ path, lines }) {
+  const fileStr = readFileSync(path, 'utf-8')
+  const fileData = fileStr
+    .split('\n')
+    .filter(Boolean)
+    .map((str) => str.trim())
+
+  const missingLines = lines.filter((line) => !fileData.includes(line))
+  if (!missingLines.length) return
+
+  const missingTexts = [heading, ...missingLines].join('\n')
+  const text = (fileStr + '\n\n' + missingTexts).trim()
+  fs.writeFileSync(path, text)
+}
+
 export default (): void => {
-  fileInfo.forEach(({ path, lines }) => {
-    let text = '# Added by npm-ez\n' + lines.join('\n') + '\n'
-
-    if (fs.existsSync(path)) {
-      const fileLines = fs.readFileSync(path, 'utf-8')
-      if (fileLines.includes(text)) return
-      text = fileLines.trim() + '\n\n' + text
-    }
-
-    fs.writeFileSync(path, text)
+  ignoreTexts.forEach((info) => {
+    fs.existsSync(info.path) ? updateIgnoreFile(info) : writeNewFile(info)
   })
 }
