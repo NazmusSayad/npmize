@@ -1,4 +1,4 @@
-# npm-ez
+# npmkit
 
 This package tries to help you to make npm package without thinking about cjs and mjs module.
 
@@ -10,8 +10,8 @@ This package tries to help you to make npm package without thinking about cjs an
 - This supports `typescript`.
 - Enables `__dirname` and `__filename` for `mjs`(esmodule).
 
-<a href="https://npmjs.com/package/npm-ez">
-  <img src="https://img.shields.io/npm/v/npm-ez" alt="npm package"> 
+<a href="https://npmjs.com/package/npmkit">
+  <img src="https://img.shields.io/npm/v/npmkit" alt="npm package"> 
 </a>
 
 ---
@@ -21,25 +21,25 @@ This package tries to help you to make npm package without thinking about cjs an
 - with npm (globally)
 
 ```shell
-npm i -g npm-ez
+npm i -g npmkit
 ```
 
 - with npm
 
 ```shell
-npm i -D npm-ez
+npm i -D npmkit
 ```
 
 - with yarn
 
 ```shell
-yarn add -D npm-ez
+yarn add -D npmkit
 ```
 
 - with pnpm
 
 ```shell
-pnpm add -D npm-ez
+pnpm add -D npmkit
 ```
 
 <br/>
@@ -55,13 +55,13 @@ The interface for command-line usage is fairly simplistic at this stage, as seen
 ## Usage
 
 ```shell
-npm-ez <command> [options]
+npmkit <command> [options]
 ```
 
 ### Example:
 
 ```shell
-npm-ez dev
+npmkit dev
 ```
 
 _This starts typescript watch mode._

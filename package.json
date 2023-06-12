@@ -1,9 +1,8 @@
 {
-  "name": "npm-ez",
+  "name": "npmjs",
   "description": "Let's create an npm package without worring about anything.",
-  "version": "2.0.6",
+  "version": "1.0.0",
   "bin": "./dist/index.js",
-  "main": "./dist/index.js",
   "scripts": {
     "dev": "tsc -w",
     "build": "tsc"
@@ -19,21 +18,73 @@
     "@types/node": "^18.11.9",
     "typescript": "^4.8.4"
   },
-  "keywords": [
-    "npm",
-    "npm-tool",
-    "npm-build",
-    "build-tool",
-    "npm-build-tool"
-  ],
   "license": "ISC",
   "author": "https://github.com/NazmusSayad",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NazmusSayad/npm-ez.git"
+    "url": "git+https://github.com/NazmusSayad/npmkit.git"
   },
   "bugs": {
-    "url": "https://github.com/NazmusSayad/npm-ez/issues"
+    "url": "https://github.com/NazmusSayad/npmkit/issues"
   },
-  "homepage": "https://github.com/NazmusSayad/npm-ez#readme"
+  "homepage": "https://github.com/NazmusSayad/npmkit#readme",
+  "keywords": [
+    "npmkit",
+    "npm package creation",
+    "npm toolkit",
+    "npm package builder",
+    "npm package generator",
+    "npm package development",
+    "npm package management",
+    "npm automation",
+    "npm project scaffolding",
+    "npm module creation",
+    "npm utility toolkit",
+    "npm workflow optimization",
+    "npm dependency management",
+    "npm package initialization",
+    "npm package boilerplate",
+    "npm package templates",
+    "npm package publishing",
+    "npm package versioning",
+    "npm package distribution",
+    "npm package bundling",
+    "npm package documentation",
+    "npm package testing",
+    "npm package configuration",
+    "npm package optimization",
+    "npm package collaboration",
+    "npm package updates",
+    "npm package maintenance",
+    "npm package code generation",
+    "npm package customization",
+    "npm package migration",
+    "npm package creation tool",
+    "npm package builder kit",
+    "npm package generation utility",
+    "npm package development toolkit",
+    "npm package management solution",
+    "automate npm package creation",
+    "simplify npm package development",
+    "efficient npm package management",
+    "streamline npm package workflows",
+    "manage npm package dependencies",
+    "initialize npm packages easily",
+    "boilerplate for npm package creation",
+    "customizable npm package templates",
+    "publish npm packages effortlessly",
+    "version control for npm packages",
+    "efficient npm package distribution",
+    "bundle npm packages efficiently",
+    "document npm packages effectively",
+    "test npm packages thoroughly",
+    "configure npm packages easily",
+    "optimize npm package performance",
+    "collaborate on npm packages",
+    "stay up-to-date with npm package updates",
+    "maintain npm packages with ease",
+    "generate code for npm packages",
+    "customize npm package functionality",
+    "migrate npm packages seamlessly"
+  ]
 }

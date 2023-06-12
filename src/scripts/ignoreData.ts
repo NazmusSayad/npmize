@@ -1,5 +1,5 @@
 import fs, { readFileSync } from 'fs'
-const heading = '# npm-ez'
+const heading = '# npmkit'
 const ignoreTexts = [
   {
     path: './.gitignore',
