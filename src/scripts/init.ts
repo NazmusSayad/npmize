@@ -29,8 +29,8 @@ const writePackageJSON = (): void => {
   pkgData.version ??= '0.0.0'
 
   pkgData.scripts ??= {}
-  pkgData.scripts.dev = 'npmkit dev'
-  pkgData.scripts.build = 'npmkit build'
+  pkgData.scripts.dev = 'npm-ez dev'
+  pkgData.scripts.build = 'npm-ez build'
 
   pkgData.main = cjsRoot
   pkgData.module = mjsRoot
