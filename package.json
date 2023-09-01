@@ -1,7 +1,7 @@
 {
-  "name": "npm-ez",
+  "name": "jspac",
   "description": "Let's create an npm package without worring about anything.",
-  "version": "2.0.6",
+  "version": "1.0.0",
   "bin": "./dist/index.js",
   "main": "./dist/index.js",
   "scripts": {
@@ -30,10 +30,10 @@
   "author": "https://github.com/NazmusSayad",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NazmusSayad/npm-ez.git"
+    "url": "git+https://github.com/NazmusSayad/jspac.git"
   },
   "bugs": {
-    "url": "https://github.com/NazmusSayad/npm-ez/issues"
+    "url": "https://github.com/NazmusSayad/jspac/issues"
   },
-  "homepage": "https://github.com/NazmusSayad/npm-ez#readme"
+  "homepage": "https://github.com/NazmusSayad/jspac#readme"
 }

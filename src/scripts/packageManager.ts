@@ -3,7 +3,7 @@ import path from 'path'
 import shell from 'shelljs'
 import ac from 'ansi-colors'
 import argv from '../argv'
-import { readJOSN } from '../utils/utils'
+import { readJSON } from '../utils/utils'
 import { packageJsonPath } from '../config'
 const requiredPackages = ['typescript']
 
@@ -48,7 +48,7 @@ const getPkgManager = (): 'npm' | 'yarn' | 'pnpm' => {
 }
 
 const manageLocalPackage = (): void => {
-  const packageData = readJOSN(packageJsonPath)
+  const packageData = readJSON(packageJsonPath)
   const missingPackages = requiredPackages.filter((dep) => {
     return !Boolean(
       (packageData.dependencies && packageData.dependencies[dep]) ||

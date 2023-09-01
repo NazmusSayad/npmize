@@ -4,11 +4,11 @@ import ac from 'ansi-colors'
 import argv from '../argv'
 import { rootDir } from '../config'
 
-export const writeJOSN = (path: string, data: {}): void => {
+export const writeJSON = (path: string, data: {}): void => {
   fs.writeFileSync(path, JSON.stringify(data, null, '\t'))
 }
 
-export const readJOSN = (path: string): any => {
+export const readJSON = (path: string): any => {
   try {
     return JSON.parse(fs.readFileSync(path, 'utf8'))
   } catch (err: any) {
