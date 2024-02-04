@@ -1,4 +1,4 @@
-# jspac
+# npmize
 
 This package tries to help you to make npm package without thinking about cjs and mjs module.
 
@@ -10,8 +10,8 @@ This package tries to help you to make npm package without thinking about cjs an
 - This supports `typescript`.
 - Enables `__dirname` and `__filename` for `mjs`(esmodule).
 
-<a href="https://npmjs.com/package/jspac">
-  <img src="https://img.shields.io/npm/v/jspac" alt="npm package"> 
+<a href="https://npmjs.com/package/npmize">
+  <img src="https://img.shields.io/npm/v/npmize" alt="npm package"> 
 </a>
 
 ---
@@ -21,25 +21,25 @@ This package tries to help you to make npm package without thinking about cjs an
 - with npm (globally)
 
 ```shell
-npm i -g jspac
+npm i -g npmize
 ```
 
 - with npm
 
 ```shell
-npm i -D jspac
+npm i -D npmize
 ```
 
 - with yarn
 
 ```shell
-yarn add -D jspac
+yarn add -D npmize
 ```
 
 - with pnpm
 
 ```shell
-pnpm add -D jspac
+pnpm add -D npmize
 ```
 
 <br/>
@@ -55,13 +55,13 @@ The interface for command-line usage is fairly simplistic at this stage, as seen
 ## Usage
 
 ```shell
-jspac <command> [options]
+npmize <command> [options]
 ```
 
 ### Example:
 
 ```shell
-jspac dev
+npmize dev
 ```
 
 _This starts typescript watch mode._
@@ -84,11 +84,11 @@ _This starts typescript watch mode._
 
 ## Command Options
 
-| Option       | Description                                                   |
-| ------------ | ------------------------------------------------------------- |
-| --no-install | Not to install required dependencies automatically            |
-| --no-ignore  | Not to add recommended ignore files to gitignore \| npmignore |
-| --no-src     | Not to create src/index.ts folder when not exists             |
+| Option       | Description                                                     |
+| ------------ | --------------------------------------------------------------- |
+| --no-install | Not to install required dependencies automatically              |
+| --no-ignore  | Not to add recommended ignore files to .gitignore \| .npmignore |
+| --no-src     | Not to create src/index.ts folder when not exists               |
 
 ### Command: `init`
 

@@ -1,33 +1,132 @@
-import ac from 'ansi-colors'
-import argv from './argv'
-import init from './scripts/init'
-import ignore from './scripts/ignoreData'
-import makeSrc from './scripts/makeSrc'
-import packageManager from './scripts/packageManager'
-import * as builder from './builder/index'
+import path from 'path'
+import config from './config'
+import NoArg, { t } from 'noarg'
+import init from './program/init'
+import dev from './program/dev'
+import build from './program/build'
+import tsconfig from './scripts/tsconfig'
 
-argv.flag['no-install'] || packageManager()
-argv.flag['no-ignore'] || ignore()
-argv.flag['no-src'] || makeSrc()
+const app = new NoArg(
+  config.name,
+  { description: config.description },
 
-switch (argv.cmd) {
-  case 'init':
-    init()
-    break
+  () => {}
+)
 
-  case 'dev':
-    builder.dev()
-    break
+app.create(
+  'init',
+  {
+    description: 'Initialize a new npm package',
+    options: {
+      name: t.string().default('.').description("The package's name"),
+      pkg: t.boolean().default(true).description("Write 'package.json'"),
+      tsc: t.boolean().default(true).description('Install TypeScript'),
+      tsconfig: t.boolean().default(true).description('Write "tsconfig.json"'),
+      demo: t.boolean().default(true).description('Write a sample file'),
 
-  case 'build':
-    builder.build()
-    break
+      ignore: t
+        .boolean()
+        .default(true)
+        .description("Write '.gitignore' and '.npmignore'"),
+      npmignore: t.boolean().default(true).description("Write '.npmignore'"),
+      gitignore: t.boolean().default(true).description("Write '.gitignore'"),
+    },
+  },
 
-  case '':
-    console.warn(ac.yellow('No command found'))
-    process.exit(1)
+  (_, options) => {
+    const root = path.resolve(options.name)
+    init(root, {
+      writeSample: options.demo,
+      writePackageJSON: options.pkg,
+      installTypeScript: options.tsc,
+      writeGitIgnore: options.ignore && options.gitignore,
+      writeNpmIgnore: options.ignore && options.npmignore,
+      writeTSConfig: options.tsconfig,
+    })
+  }
+)
 
-  default:
-    console.error(ac.red('Unknown command `' + ac.yellow(argv.cmd) + '`'))
-    process.exit(1)
-}
+app.create(
+  'dev',
+  {
+    description: 'Start a development',
+    options: {
+      root: t.string().default('.').aliases('r').description('Root directory'),
+
+      module: t
+        .string()
+        .enum('cjs', 'mjs')
+        .aliases('m')
+        .description("Output module's type"),
+
+      outDir: t.string().aliases('o').description('Output directory'),
+
+      tsc: t
+        .array(t.string())
+        .aliases('t')
+        .default([])
+        .description("TypeScript's options"),
+    },
+  },
+
+  (_, options) => {
+    const rootPath = path.resolve(options.root)
+    dev(rootPath, {
+      ...options,
+      outDir: options.outDir
+        ? path.join(rootPath, options.outDir)
+        : path.join(
+            rootPath,
+            tsconfig.read(rootPath)?.compilerOptions?.outDir ??
+              config.defaultOutDir
+          ),
+    })
+  }
+)
+
+app.create(
+  'build',
+  {
+    description: 'Build the package for production',
+    options: {
+      root: t.string().default('.').aliases('r').description('Root directory'),
+
+      module: t
+        .string()
+        .enum('cjs', 'mjs')
+        .aliases('m')
+        .description("Output module's type"),
+
+      outDir: t.string().aliases('o').description('Output directory'),
+
+      tsc: t
+        .array(t.string())
+        .aliases('t')
+        .default([])
+        .description("TypeScript's options"),
+
+      node: t
+        .boolean()
+        .aliases('n')
+        .default(false)
+        .description('Enable __dirname and __filename in ES modules'),
+    },
+  },
+
+  (_, options) => {
+    const rootPath = path.resolve(options.root)
+    build(rootPath, {
+      ...options,
+      outDir: options.outDir
+        ? path.join(rootPath, options.outDir)
+        : path.join(
+            rootPath,
+            tsconfig.read(rootPath)?.compilerOptions?.outDir ??
+              config.defaultOutDir
+          ),
+    })
+  }
+)
+
+// app.run(['init', '--name', '../npmize-test'])
+app.run(['build', '--root', '../npmize-test', '-n'])

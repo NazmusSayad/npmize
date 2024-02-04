@@ -1,50 +1,46 @@
-import * as utils from './utils'
-import * as mainUtils from '../utils/utils'
+import { findNestedItems, isOkString, parseString } from './utils'
 
-export const TSImportType = (parsed) => {
-  return mainUtils
-    .findNestedItems(parsed, 'type', 'TSImportType')
-    .filter((node) => utils.isOkString(node.argument))
-    .map((node) => utils.parseString(node.argument))
+export const TSImportType = (parsed: any) => {
+  return findNestedItems(parsed, 'type', 'TSImportType')
+    .filter((node) => isOkString(node.argument))
+    .map((node) => parseString(node.argument))
 }
 
 export const ImportDeclaration_ExportNamedDeclaration_ExportAllDeclaration = (
-  parsed
+  parsed: any
 ) => {
   return [
-    mainUtils.findNestedItems(parsed, 'type', 'ImportDeclaration'),
-    mainUtils.findNestedItems(parsed, 'type', 'ExportDeclaration'),
-    mainUtils.findNestedItems(parsed, 'type', 'ExportNamedDeclaration'),
-    mainUtils.findNestedItems(parsed, 'type', 'ExportAllDeclaration'),
+    findNestedItems(parsed, 'type', 'ImportDeclaration'),
+    findNestedItems(parsed, 'type', 'ExportDeclaration'),
+    findNestedItems(parsed, 'type', 'ExportNamedDeclaration'),
+    findNestedItems(parsed, 'type', 'ExportAllDeclaration'),
   ]
     .flat()
-    .filter((node) => utils.isOkString(node.source))
-    .map((node) => utils.parseString(node.source))
+    .filter((node) => isOkString(node.source))
+    .map((node) => parseString(node.source))
 }
 
-export const CallExpressionImport = (parsed) => {
-  return mainUtils
-    .findNestedItems(parsed, 'type', 'CallExpression')
+export const CallExpressionImport = (parsed: any) => {
+  return findNestedItems(parsed, 'type', 'CallExpression')
     .filter(
       (node) =>
         node &&
         node.callee &&
         node.callee.type === 'Import' &&
-        utils.isOkString(node.arguments[0])
+        isOkString(node.arguments[0])
     )
-    .map((node) => utils.parseString(node.arguments[0]))
+    .map((node) => parseString(node.arguments[0]))
 }
 
-export const CallExpressionRequire = (parsed) => {
-  return mainUtils
-    .findNestedItems(parsed, 'type', 'CallExpression')
+export const CallExpressionRequire = (parsed: any) => {
+  return findNestedItems(parsed, 'type', 'CallExpression')
     .filter(
       (node) =>
         node &&
         node.callee &&
         node.callee.type === 'Identifier' &&
         node.callee.name === 'require' &&
-        utils.isOkString(node.arguments[0])
+        isOkString(node.arguments[0])
     )
-    .map((node) => utils.parseString(node.arguments[0]))
+    .map((node) => parseString(node.arguments[0]))
 }

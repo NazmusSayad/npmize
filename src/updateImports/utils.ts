@@ -1,7 +1,4 @@
-import fs from 'fs'
-import path from 'path'
-
-export const getUpdatedData = (fileData, found, cb) => {
+export const getUpdatedData = (fileData: any, found: any[], cb: any) => {
   const newEntries = [
     { start: 0, end: 0, value: '', rawValue: '', filename: '' },
     ...found.sort((a, b) => a.start - b.start),
@@ -20,11 +17,11 @@ export const getUpdatedData = (fileData, found, cb) => {
   return chunks.flat().join('')
 }
 
-export const isOkString = (node) => {
+export const isOkString = (node: any) => {
   return node && node.type === 'StringLiteral' && node.value.startsWith('.')
 }
 
-export const parseString = (str) => ({
+export const parseString = (str: any) => ({
   start: str.start,
   end: str.end,
   value: str.value,
@@ -46,4 +43,18 @@ export function getNewFilePath(filePath: string, type: 'cjs' | 'mjs') {
   return filePath.replace(/\.(js|ts)$/, (match) => {
     return match.replace(/(js|ts)/i, (m) => prefix + m)
   })
+}
+
+export const findNestedItems = (
+  entireObj: any,
+  keyToFind: string,
+  valToFind: unknown
+) => {
+  const foundObj: any[] = []
+  JSON.stringify(entireObj, (_, nestedValue) => {
+    const found = nestedValue && nestedValue[keyToFind] === valToFind
+    found && foundObj.push(nestedValue)
+    return nestedValue
+  })
+  return foundObj
 }

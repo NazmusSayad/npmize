@@ -4,7 +4,7 @@ import * as babel from '@babel/parser'
 import * as utils from './utils'
 import * as node from './node'
 
-const getImports = (parsed) => {
+const getImports = (parsed: any) => {
   return [
     ...node.CallExpressionImport(parsed),
     ...node.TSImportType(parsed),
@@ -14,14 +14,14 @@ const getImports = (parsed) => {
   ]
 }
 
-const getRequires = (parsed) => {
+const getRequires = (parsed: any) => {
   return node.CallExpressionRequire(parsed)
 }
 
-export default (type, files) => {
+export default (type: 'cjs' | 'mjs', files: any[]) => {
   const ext = '.' + type
 
-  files.forEach((filePath) => {
+  return files.map((filePath) => {
     const dirPath = path.dirname(filePath)
     const data = fs.readFileSync(filePath, 'utf-8')
     const parsedBody = babel.parse(data, {
@@ -35,15 +35,21 @@ export default (type, files) => {
         ? getImports(parsedBody)
         : getRequires(parsedBody)
 
-    const updatedData = utils.getUpdatedData(data, foundFilePaths, (node) => {
-      const shortPath = node.value.replace(/\.js$/i, '')
-      const fullPath = path.join(dirPath, node.value)
+    const updatedData = utils.getUpdatedData(
+      data,
+      foundFilePaths,
+      (node: any) => {
+        const shortPath = node.value.replace(/\.js$/i, '')
+        const fullPath = path.join(dirPath, node.value)
 
-      const isExists = utils.isFileExists(files, fullPath)
-      return isExists ? shortPath + ext : shortPath + '/index' + ext
-    })
+        const isExists = utils.isFileExists(files, fullPath)
+        return isExists ? shortPath + ext : shortPath + '/index' + ext
+      }
+    )
 
     fs.rmSync(filePath)
-    fs.writeFileSync(utils.getNewFilePath(filePath, type), updatedData)
+    const newFilePath = utils.getNewFilePath(filePath, type)
+    fs.writeFileSync(newFilePath, updatedData)
+    return newFilePath
   })
 }
