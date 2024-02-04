@@ -32,10 +32,10 @@ export default function (basePath: string, options: InitOptions) {
     console.log(ansiColors.bgGreen(' INFO: '), 'package.json is disabled')
   }
 
-  if (options.installTypeScript) {
+  if (options.installPackages) {
     shelljs
       .cd(basePath)
-      .exec('npm install typescript --save-dev --no-package-lock')
+      .exec('npm install npmize typescript --save-dev --no-package-lock')
   } else {
     console.log(ansiColors.bgGreen(' INFO: '), 'TypeScript is disabled')
   }
@@ -104,7 +104,7 @@ export default function (basePath: string, options: InitOptions) {
 type InitOptions = {
   writeTSConfig: boolean
   writePackageJSON: boolean
-  installTypeScript: boolean
+  installPackages: boolean
   writeNpmIgnore: boolean
   writeGitIgnore: boolean
   writeSample: boolean

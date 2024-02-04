@@ -20,7 +20,7 @@ app.create(
     options: {
       name: t.string().default('.').description("The package's name"),
       pkg: t.boolean().default(true).description("Write 'package.json'"),
-      tsc: t.boolean().default(true).description('Install TypeScript'),
+      install: t.boolean().default(true).description('Install TypeScript'),
       tsconfig: t.boolean().default(true).description('Write "tsconfig.json"'),
       demo: t.boolean().default(true).description('Write a sample file'),
 
@@ -38,7 +38,7 @@ app.create(
     init(root, {
       writeSample: options.demo,
       writePackageJSON: options.pkg,
-      installTypeScript: options.tsc,
+      installPackages: options.install,
       writeGitIgnore: options.ignore && options.gitignore,
       writeNpmIgnore: options.ignore && options.npmignore,
       writeTSConfig: options.tsconfig,
@@ -54,8 +54,7 @@ app.create(
       root: t.string().default('.').aliases('r').description('Root directory'),
 
       module: t
-        .string()
-        .enum('cjs', 'mjs')
+        .string('cjs', 'mjs')
         .aliases('m')
         .description("Output module's type"),
 
@@ -92,8 +91,7 @@ app.create(
       root: t.string().default('.').aliases('r').description('Root directory'),
 
       module: t
-        .string()
-        .enum('cjs', 'mjs')
+        .string('cjs', 'mjs')
         .aliases('m')
         .description("Output module's type"),
 
