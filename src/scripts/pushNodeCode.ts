@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { writeFileSync } from '../utils'
 
 const varName =
   '_____VGhpcyBuYW1lIGlzIHVzZWQgdG8gZW5hYmxlIF9fZGlybmFtZSBhbmQgX19maWxlbmFtZSDwn5iK_____'
@@ -30,6 +31,6 @@ export default (...files: string[]) => {
       data = nodeCode + data
     }
 
-    fs.writeFileSync(file, data)
+    writeFileSync(file, data)
   })
 }

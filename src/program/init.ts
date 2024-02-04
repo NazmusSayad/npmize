@@ -4,6 +4,8 @@ import shelljs from 'shelljs'
 import config from '../config'
 import ansiColors from 'ansi-colors'
 import packageJSON from '../scripts/packageJSON'
+import { writeFileSync } from '../utils'
+import tsconfigJSON from '../scripts/tsconfigJSON'
 
 export default function (basePath: string, options: InitOptions) {
   console.log(`\x1b[1m\x1b[35m▓▒░ NPMIZE ░▒▓\x1b[0m\n`)
@@ -41,7 +43,8 @@ export default function (basePath: string, options: InitOptions) {
   }
 
   if (options.writeTSConfig) {
-    const tsconfig = {
+    const oldTSConfig = tsconfigJSON.read(basePath)
+    const newTSConfig = {
       compilerOptions: {
         target: 'es6',
         skipLibCheck: true,
@@ -56,9 +59,21 @@ export default function (basePath: string, options: InitOptions) {
       include: ['./src'],
     }
 
-    fs.writeFileSync(
+    const mixedTsconfig = {
+      ...oldTSConfig,
+      ...newTSConfig,
+      compilerOptions: {
+        ...oldTSConfig.compilerOptions,
+        ...newTSConfig.compilerOptions,
+      },
+      include: Array.from(
+        new Set([...(oldTSConfig.include ?? []), ...newTSConfig.include])
+      ),
+    }
+
+    writeFileSync(
       path.join(basePath, './tsconfig.json'),
-      JSON.stringify(tsconfig, null, 2)
+      JSON.stringify(mixedTsconfig, null, 2)
     )
   }
 
@@ -91,7 +106,7 @@ export default function (basePath: string, options: InitOptions) {
       )
     } else {
       fs.mkdirSync(srcPath)
-      fs.writeFileSync(
+      writeFileSync(
         path.join(srcPath, './index.ts'),
         `console.log('Hello, world!')\nexport default 'Hello, world!'`
       )
@@ -123,5 +138,5 @@ function updateIgnoreFile(path: string, lines: string[]) {
 
   const missingTexts = ['# ' + config.name, ...missingLines].join('\n')
   const text = (fileStr + '\n\n' + missingTexts).trim()
-  fs.writeFileSync(path, text)
+  writeFileSync(path, text)
 }

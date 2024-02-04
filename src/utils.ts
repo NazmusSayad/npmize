@@ -24,3 +24,11 @@ export function moveFiles(baseDir: string, outDir: string, files: string[]) {
     return outDirFilePath
   })
 }
+
+export function writeFileSync(filePath: string, data: string) {
+  const dirname = path.dirname(filePath)
+  if (!fs.existsSync(dirname)) {
+    fs.mkdirSync(path.dirname(filePath), { recursive: true })
+  }
+  fs.writeFileSync(filePath, data)
+}

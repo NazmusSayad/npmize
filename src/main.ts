@@ -1,10 +1,10 @@
 import path from 'path'
 import config from './config'
+import dev from './program/dev'
 import NoArg, { t } from 'noarg'
 import init from './program/init'
-import dev from './program/dev'
 import build from './program/build'
-import tsconfig from './scripts/tsconfig'
+import tsconfigJSON from './scripts/tsconfigJSON'
 
 const app = new NoArg(
   config.name,
@@ -76,7 +76,7 @@ app.create(
         ? path.join(rootPath, options.outDir)
         : path.join(
             rootPath,
-            tsconfig.read(rootPath)?.compilerOptions?.outDir ??
+            tsconfigJSON.read(rootPath)?.compilerOptions?.outDir ??
               config.defaultOutDir
           ),
     })
@@ -119,7 +119,7 @@ app.create(
         ? path.join(rootPath, options.outDir)
         : path.join(
             rootPath,
-            tsconfig.read(rootPath)?.compilerOptions?.outDir ??
+            tsconfigJSON.read(rootPath)?.compilerOptions?.outDir ??
               config.defaultOutDir
           ),
     })

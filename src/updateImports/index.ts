@@ -3,6 +3,7 @@ import path from 'path'
 import * as babel from '@babel/parser'
 import * as utils from './utils'
 import * as node from './node'
+import { writeFileSync } from '../utils'
 
 const getImports = (parsed: any) => {
   return [
@@ -49,7 +50,7 @@ export default (type: 'cjs' | 'mjs', files: any[]) => {
 
     fs.rmSync(filePath)
     const newFilePath = utils.getNewFilePath(filePath, type)
-    fs.writeFileSync(newFilePath, updatedData)
+    writeFileSync(newFilePath, updatedData)
     return newFilePath
   })
 }

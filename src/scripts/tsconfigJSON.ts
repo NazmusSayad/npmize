@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 import path from 'path'
+import { writeFileSync } from '../utils'
 
 function read(basePath: string): Record<string, any> {
   try {
@@ -13,7 +14,7 @@ function read(basePath: string): Record<string, any> {
 
 function write(basePath: string, data: Record<string, any>) {
   const filePath = path.join(basePath, './tsconfig.json')
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
+  writeFileSync(filePath, JSON.stringify(data, null, 2))
 }
 
 export default { read, write }
