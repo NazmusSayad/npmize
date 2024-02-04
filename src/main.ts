@@ -126,8 +126,8 @@ app.create(
   }
 )
 
-// app.run()
+app.run()
 
-console.clear()
-app.run(['init', '--name', '../npmize-test'])
-app.run(['build', '--root', '../npmize-test', '-n'])
+// console.clear()
+// app.run(['init', '--name', '../npmize-test'])
+// app.run(['build', '--root', '../npmize-test', '-n'])
