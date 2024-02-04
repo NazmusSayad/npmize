@@ -1,12 +1,12 @@
 {
   "name": "npmize",
-  "description": "Let's create an npm package without worring about anything.",
-  "version": "0.0.1",
+  "description": "Let's create an npm package without worrying about anything.",
+  "version": "0.0.2",
   "bin": "./dist/index.js",
   "scripts": {
-    "run": "nodemon ./src/index.ts",
-    "dev": "npmize dev",
-    "build": "npmize build"
+    "lab": "nodemon ./src/index.ts",
+    "dev": "tsc -w",
+    "build": "tsc"
   },
   "type": "commonjs",
   "dependencies": {
@@ -17,8 +17,6 @@
     "shelljs": "^0.8.5"
   },
   "devDependencies": {
-    "@types/argparse": "^2.0.14",
-    "@types/args": "^5.0.3",
     "@types/node": "^18.11.9",
     "@types/shelljs": "^0.8.15",
     "typescript": "^5.3.3"

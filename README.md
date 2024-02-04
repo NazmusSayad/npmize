@@ -8,7 +8,7 @@ This package tries to help you to make npm package without thinking about cjs an
 - Very very simple.
 - Very very lightweight.
 - This supports `typescript`.
-- Enables `__dirname` and `__filename` for `mjs`(esmodule).
+- Enables `__dirname` and `__filename` for `mjs`(EsModule).
 
 <a href="https://npmjs.com/package/npmize">
   <img src="https://img.shields.io/npm/v/npmize" alt="npm package"> 
