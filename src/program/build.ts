@@ -61,6 +61,7 @@ function runBuild(
     ).toFixed(2)}KB`
   )
 
+  cleanDir(tempDir, false)
   console.log('')
 }
 
