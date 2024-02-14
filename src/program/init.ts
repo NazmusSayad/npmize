@@ -6,6 +6,7 @@ import ansiColors from 'ansi-colors'
 import packageJSON from '../scripts/packageJSON'
 import { writeFileSync } from '../utils'
 import tsconfigJSON from '../scripts/tsconfigJSON'
+import ghWorkflows from '../scripts/ghWorkflows'
 
 export default function (basePath: string, options: InitOptions) {
   console.log(`\x1b[1m\x1b[35m▓▒░ NPMIZE ░▒▓\x1b[0m\n`)
@@ -102,7 +103,7 @@ export default function (basePath: string, options: InitOptions) {
     if (srcExists) {
       console.log(
         ansiColors.bgYellow(' WARN: '),
-        "'/src/index.ts' folder already exists"
+        "'./src/index.ts' folder already exists"
       )
     } else {
       fs.mkdirSync(srcPath)
@@ -114,6 +115,12 @@ export default function (basePath: string, options: InitOptions) {
   } else {
     console.log(ansiColors.bgGreen(' INFO: '), 'Sample is disabled')
   }
+
+  if (options.ghWorkflow) {
+    ghWorkflows(basePath)
+  } else {
+    console.log(ansiColors.bgGreen(' INFO: '), 'GitHub workflow is disabled')
+  }
 }
 
 type InitOptions = {
@@ -123,6 +130,7 @@ type InitOptions = {
   writeNpmIgnore: boolean
   writeGitIgnore: boolean
   writeSample: boolean
+  ghWorkflow: boolean
 }
 
 function updateIgnoreFile(path: string, lines: string[]) {

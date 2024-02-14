@@ -3,4 +3,5 @@ export default {
   description: 'A tool to help you publish your package to npm with ease',
   tempBuildDir: './.npmize',
   defaultOutDir: './dist',
+  ghWorkflowDir: './.github/workflows',
 }

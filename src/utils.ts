@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import shelljs from 'shelljs'
 
 export function cleanDir(dir: string, create = true) {
   if (fs.existsSync(dir)) {
@@ -31,4 +32,21 @@ export function writeFileSync(filePath: string, data: string) {
     fs.mkdirSync(path.dirname(filePath), { recursive: true })
   }
   fs.writeFileSync(filePath, data)
+}
+
+export function confirmDir(...paths: string[]) {
+  const exactPath = path.join(...paths)
+
+  if (!fs.existsSync(exactPath)) {
+    fs.mkdirSync(exactPath, { recursive: true })
+  }
+
+  return exactPath
+}
+
+export function getNodeVersion() {
+  const nodeVersion = shelljs.exec('node -v', { silent: true }).stdout.trim()
+  if (nodeVersion) {
+    return Number.parseInt(nodeVersion.replace('v', ''))
+  }
 }

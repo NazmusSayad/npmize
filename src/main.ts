@@ -6,10 +6,9 @@ import init from './program/init'
 import build from './program/build'
 import tsconfigJSON from './scripts/tsconfigJSON'
 
-const app = new NoArg(
+const app = NoArg.create(
   config.name,
   { description: config.description },
-
   () => {}
 )
 
@@ -23,6 +22,7 @@ app.create(
       install: t.boolean().default(true).description('Install TypeScript'),
       tsconfig: t.boolean().default(true).description('Write "tsconfig.json"'),
       demo: t.boolean().default(true).description('Write a sample file'),
+      workflow: t.boolean().default(true).description('Write a workflow file'),
 
       ignore: t
         .boolean()
@@ -42,6 +42,7 @@ app.create(
       writeGitIgnore: options.ignore && options.gitignore,
       writeNpmIgnore: options.ignore && options.npmignore,
       writeTSConfig: options.tsconfig,
+      ghWorkflow: options.workflow,
     })
   }
 )
@@ -126,8 +127,4 @@ app.create(
   }
 )
 
-app.run()
-
-// console.clear()
-// app.run(['init', '--name', '../npmize-test'])
-// app.run(['build', '--root', '../npmize-test', '-n'])
+export default app
