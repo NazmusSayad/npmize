@@ -14,15 +14,19 @@ export default function (basePath: string, options: InitOptions) {
   if (options.writePackageJSON) {
     const data = packageJSON.read(basePath)
 
-    data.name = path.basename(basePath)
-    data.version = '0.0.0'
+    data.name ??= path.basename(basePath)
+    data.version ??= '0.0.0'
+
     data.scripts ??= {}
     data.scripts.dev = 'npmize dev'
     data.scripts.build = 'npmize build'
 
+    delete data.main
+    delete data.module
+    delete data.exports
+
     data.main = './dist/index.cjs'
     data.module = './dist/index.mjs'
-    data.exports ??= {}
     data.exports = {
       '.': {
         require: './dist/index.cjs',
@@ -36,9 +40,7 @@ export default function (basePath: string, options: InitOptions) {
   }
 
   if (options.installPackages) {
-    shelljs
-      .cd(basePath)
-      .exec('npm install npmize typescript --save-dev --no-package-lock')
+    shelljs.cd(basePath).exec('npm install npmize typescript --save-dev')
   } else {
     console.log(ansiColors.bgGreen(' INFO: '), 'TypeScript is disabled')
   }
