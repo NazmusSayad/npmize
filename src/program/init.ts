@@ -81,7 +81,7 @@ export default function (basePath: string, options: InitOptions) {
   }
 
   if (options.writeGitIgnore) {
-    updateIgnoreFile('./.gitignore', ['node_modules', 'dist', '.npmize'])
+    updateIgnoreFile('./.gitignore', ['dist', '.npmize', 'node_modules'])
   } else {
     console.log(ansiColors.bgGreen(' INFO: '), 'Gitignore is disabled')
   }
@@ -91,8 +91,8 @@ export default function (basePath: string, options: InitOptions) {
       '*',
       '!lib/**',
       '!dist/**',
-      '!package.json',
       '!README.md',
+      '!package.json',
     ])
   } else {
     console.log(ansiColors.bgGreen(' INFO: '), 'Npmignore is disabled')
