@@ -14,10 +14,7 @@ export function cleanDir(dir: string, createDir = true) {
 }
 
 export function getVersion() {
-  const { version } = packageJSON.read(path.join(__dirname, '../'))
-
-  if (version) console.log(`v${version}`)
-  else console.log('No version found in package.json')
+  return packageJSON.read(path.join(__dirname, '../')).version
 }
 
 export function moveFiles(
