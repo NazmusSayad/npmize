@@ -27,7 +27,7 @@ export default function (basePath: string, options: DevOptions) {
   }
 
   fs.watch(tempDir, { recursive: true }, (event, filename) => {
-    if (event !== 'change') return
+    if (event !== 'change' || !filename) return
     if (!(filename.endsWith('.js') || filename.endsWith('.ts'))) return
 
     if (options.module) {
