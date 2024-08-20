@@ -23,8 +23,14 @@ app
   .create('init', {
     description: 'Initialize a new npm package',
 
+    optionalArguments: [
+      {
+        name: 'name',
+        type: t.string().description('Name of the package'),
+      },
+    ],
+
     flags: {
-      name: t.string().default('.').description("The package's name"),
       pkg: t.boolean().default(true).description("Write 'package.json'"),
       install: t.boolean().default(true).description('Install TypeScript'),
       tsconfig: t.boolean().default(true).description('Write "tsconfig.json"'),
@@ -39,8 +45,8 @@ app
       gitignore: t.boolean().default(true).description("Write '.gitignore'"),
     },
   })
-  .on((_, flags) => {
-    const root = path.resolve(flags.name)
+  .on(([nameArg = '.'], flags) => {
+    const root = path.resolve(nameArg)
     init(root, {
       writeSample: flags.demo,
       writePackageJSON: flags.pkg,
