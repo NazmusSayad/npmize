@@ -11,6 +11,8 @@ export default function (basePath: string, options: Options) {
   console.log(`Build started at ${basePath}`)
   console.log('')
 
+  cleanDir(options.outDir)
+
   if (options.module) {
     runBuild(options.module, basePath, options)
   } else {
@@ -28,7 +30,6 @@ function runBuild(
 
   const tempDir = path.join(basePath, config.tempBuildDir)
   cleanDir(tempDir)
-  cleanDir(options.outDir)
 
   tsc(basePath, [
     ...options.tsc.map((tsc) => `--${tsc}`),
