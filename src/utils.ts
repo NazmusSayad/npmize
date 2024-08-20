@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import shelljs from 'shelljs'
+import packageJSON from './scripts/packageJSON'
 
 export function cleanDir(dir: string, createDir = true) {
   if (fs.existsSync(dir)) {
@@ -13,14 +14,10 @@ export function cleanDir(dir: string, createDir = true) {
 }
 
 export function getVersion() {
-  try {
-    const packageJSON = JSON.parse(
-      fs.readFileSync(path.join(__dirname, '../package.json'), 'utf-8')
-    )
-    return 'v' + packageJSON.version
-  } catch {
-    return 'Something went wrong!'
-  }
+  const { version } = packageJSON.read(path.join(__dirname, '../'))
+
+  if (version) console.log(`v${version}`)
+  else console.log('No version found in package.json')
 }
 
 export function moveFiles(

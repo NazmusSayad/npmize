@@ -6,14 +6,8 @@ import tsc from '../scripts/tsc'
 import { cleanDir, moveFiles } from '../utils'
 import updateImports from '../updateImports'
 import pushNodeCode from '../scripts/pushNodeCode'
-import packageJSON from '../scripts/packageJSON'
 
 export default function (basePath: string, options: Options) {
-  const data = packageJSON.read(basePath)
-  if (data.type) {
-    options.module ??= data.type === 'module' ? 'mjs' : 'cjs'
-  }
-
   console.log(`Build started at ${basePath}`)
   console.log('')
 

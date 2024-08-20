@@ -4,14 +4,10 @@ import config from '../config'
 import tsc from '../scripts/tsc'
 import updateImports from '../updateImports'
 import { cleanDir, moveFiles } from '../utils'
-import packageJSON from '../scripts/packageJSON'
 import pushNodeCode from '../scripts/pushNodeCode'
 
 export default function (basePath: string, options: DevOptions) {
-  const data = packageJSON.read(basePath)
-  if (data.type) {
-    options.module ??= data.type === 'module' ? 'mjs' : 'cjs'
-  }
+  options.module ??= 'cjs'
 
   const tempDir = path.join(basePath, config.tempBuildDir)
   cleanDir(tempDir)
@@ -29,13 +25,7 @@ export default function (basePath: string, options: DevOptions) {
   fs.watch(tempDir, { recursive: true }, (event, filename) => {
     if (event !== 'change' || !filename) return
     if (!(filename.endsWith('.js') || filename.endsWith('.ts'))) return
-
-    if (options.module) {
-      makeOutFiles(filename, options.module)
-    } else {
-      makeOutFiles(filename, 'cjs')
-      makeOutFiles(filename, 'mjs')
-    }
+    makeOutFiles(filename, options.module!)
   })
 
   tsc(
