@@ -12,6 +12,17 @@ export function cleanDir(dir: string, createDir = true) {
   }
 }
 
+export function getVersion() {
+  try {
+    const packageJSON = JSON.parse(
+      fs.readFileSync(path.join(__dirname, '../package.json'), 'utf-8')
+    )
+    return 'v' + packageJSON.version
+  } catch {
+    return 'Something went wrong!'
+  }
+}
+
 export function moveFiles(
   baseDir: string,
   outDir: string,

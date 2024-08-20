@@ -5,18 +5,25 @@ import NoArg, { t } from 'noarg'
 import init from './program/init'
 import build from './program/build'
 import tsconfigJSON from './scripts/tsconfigJSON'
+import { getVersion } from './utils'
 
-const app = NoArg.create(
-  config.name,
-  { description: config.description },
-  () => {}
-)
+const app = NoArg.create(config.name, {
+  description: config.description,
 
-app.create(
-  'init',
-  {
+  flags: {
+    version: t.boolean().aliases('v').description('Show the version'),
+  },
+}).on((_, flags) => {
+  if (flags.version) {
+    console.log(getVersion())
+  } else app.renderHelp()
+})
+
+app
+  .create('init', {
     description: 'Initialize a new npm package',
-    options: {
+
+    flags: {
       name: t.string().default('.').description("The package's name"),
       pkg: t.boolean().default(true).description("Write 'package.json'"),
       install: t.boolean().default(true).description('Install TypeScript'),
@@ -31,52 +38,57 @@ app.create(
       npmignore: t.boolean().default(true).description("Write '.npmignore'"),
       gitignore: t.boolean().default(true).description("Write '.gitignore'"),
     },
-  },
-
-  (_, options) => {
-    const root = path.resolve(options.name)
+  })
+  .on((_, flags) => {
+    const root = path.resolve(flags.name)
     init(root, {
-      writeSample: options.demo,
-      writePackageJSON: options.pkg,
-      installPackages: options.install,
-      writeGitIgnore: options.ignore && options.gitignore,
-      writeNpmIgnore: options.ignore && options.npmignore,
-      writeTSConfig: options.tsconfig,
-      ghWorkflow: options.workflow,
+      writeSample: flags.demo,
+      writePackageJSON: flags.pkg,
+      installPackages: flags.install,
+      writeGitIgnore: flags.ignore && flags.gitignore,
+      writeNpmIgnore: flags.ignore && flags.npmignore,
+      writeTSConfig: flags.tsconfig,
+      ghWorkflow: flags.workflow,
     })
-  }
-)
+  })
 
-app.create(
-  'dev',
-  {
-    description: 'Start a development',
-    options: {
-      root: t.string().default('.').aliases('r').description('Root directory'),
-
-      module: t
-        .string('cjs', 'mjs')
-        .aliases('m')
-        .description("Output module's type"),
-
-      outDir: t.string().aliases('o').description('Output directory'),
-
-      tsc: t
-        .array(t.string())
-        .aliases('t')
-        .default([])
-        .description("TypeScript's options"),
-
-      node: t
-        .boolean()
-        .aliases('n')
-        .default(false)
-        .description('Enable __dirname and __filename in ES modules'),
+const devAndBuild = {
+  optionalArguments: [
+    {
+      name: 'root',
+      type: t.string().description('Root directory'),
     },
-  },
+  ],
 
-  (_, options) => {
-    const rootPath = path.resolve(options.root)
+  flags: {
+    module: t
+      .string('cjs', 'mjs')
+      .aliases('m')
+      .description("Output module's type"),
+
+    outDir: t.string().aliases('o').description('Output directory'),
+
+    tsc: t
+      .array(t.string())
+      .aliases('t')
+      .default([])
+      .description("TypeScript's options"),
+
+    node: t
+      .boolean()
+      .aliases('n')
+      .default(false)
+      .description('Enable __dirname and __filename in ES modules'),
+  },
+}
+
+app
+  .create('dev', {
+    description: 'Start a development',
+    ...devAndBuild,
+  })
+  .on(([rootArg = '.'], options) => {
+    const rootPath = path.resolve(rootArg as string)
     dev(rootPath, {
       ...options,
       outDir: options.outDir
@@ -87,39 +99,15 @@ app.create(
               config.defaultOutDir
           ),
     })
-  }
-)
+  })
 
-app.create(
-  'build',
-  {
+app
+  .create('build', {
     description: 'Build the package for production',
-    options: {
-      root: t.string().default('.').aliases('r').description('Root directory'),
-
-      module: t
-        .string('cjs', 'mjs')
-        .aliases('m')
-        .description("Output module's type"),
-
-      outDir: t.string().aliases('o').description('Output directory'),
-
-      tsc: t
-        .array(t.string())
-        .aliases('t')
-        .default([])
-        .description("TypeScript's options"),
-
-      node: t
-        .boolean()
-        .aliases('n')
-        .default(false)
-        .description('Enable __dirname and __filename in ES modules'),
-    },
-  },
-
-  (_, options) => {
-    const rootPath = path.resolve(options.root)
+    ...devAndBuild,
+  })
+  .on(([rootArg = '.'], options) => {
+    const rootPath = path.resolve(rootArg as string)
     build(rootPath, {
       ...options,
       outDir: options.outDir
@@ -130,7 +118,6 @@ app.create(
               config.defaultOutDir
           ),
     })
-  }
-)
+  })
 
 export default app

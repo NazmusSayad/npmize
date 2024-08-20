@@ -2,6 +2,8 @@ console.clear()
 
 import app from './main'
 
-// app.run(['init', '--name', '../npmize-test'])
-app.run(['dev', '--root', '../npmize-test', '--node'])
-// app.run(['build', '--root', '../npmize-test'])
+app.start(['-v'])
+
+// app.start(['init', '--name', '../npmize-test'])
+// app.start(['dev', '../npmize-test', '--node'])
+// app.start(['build', '../npmize-test'])
