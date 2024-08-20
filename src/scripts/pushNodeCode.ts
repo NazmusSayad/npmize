@@ -20,8 +20,8 @@ ${urlModule}${filename}${dirname}
 export default (...files: string[]) => {
   files.forEach((file) => {
     if (file.endsWith('ts')) return
-
-    let data: string = fs.readFileSync(file, 'utf-8')
+    let data = fs.readFileSync(file, 'utf-8')
+    if (!(data.includes('__dirname') || data.includes('__filename'))) return
 
     if (data.startsWith('#!')) {
       const dataLines = data.split('\n')

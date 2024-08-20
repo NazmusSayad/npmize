@@ -1,3 +1,5 @@
+import * as fs from 'fs'
+
 export const getUpdatedData = (fileData: any, found: any[], cb: any) => {
   const newEntries = [
     { start: 0, end: 0, value: '', rawValue: '', filename: '' },
@@ -33,7 +35,10 @@ export const isFileExists = (files: string[], target: string) => {
   return (
     files.includes(target) ||
     files.includes(target + '.js') ||
-    files.includes(target + '.ts')
+    files.includes(target + '.ts') ||
+    (fs.existsSync(target) && fs.statSync(target).isFile()) ||
+    (fs.existsSync(target + '.js') && fs.statSync(target + '.js').isFile()) ||
+    (fs.existsSync(target + '.ts') && fs.statSync(target + '.ts').isFile())
   )
 }
 

@@ -2,28 +2,36 @@ import fs from 'fs'
 import path from 'path'
 import shelljs from 'shelljs'
 
-export function cleanDir(dir: string, create = true) {
+export function cleanDir(dir: string, createDir = true) {
   if (fs.existsSync(dir)) {
     fs.rmSync(dir, { recursive: true, force: true })
   }
 
-  if (create) {
+  if (createDir) {
     fs.mkdirSync(dir, { recursive: true })
   }
 }
 
-export function moveFiles(baseDir: string, outDir: string, files: string[]) {
-  return files.map((filePath) => {
-    const relativePath = path.relative(baseDir, filePath)
-    const outDirFilePath = path.join(outDir, '/' + relativePath)
+export function moveFiles(
+  baseDir: string,
+  outDir: string,
+  data: Record<string, string>
+) {
+  const newPaths = [] as string[]
 
-    if (!fs.existsSync(outDirFilePath)) {
-      fs.mkdirSync(path.dirname(outDirFilePath), { recursive: true })
+  for (const key in data) {
+    const oldRelative = path.relative(baseDir, key)
+    const outPath = path.join(outDir, oldRelative)
+
+    if (!fs.existsSync(outPath)) {
+      fs.mkdirSync(path.dirname(outPath), { recursive: true })
     }
 
-    fs.renameSync(filePath, outDirFilePath)
-    return outDirFilePath
-  })
+    fs.writeFileSync(outPath, data[key])
+    newPaths.push(outPath)
+  }
+
+  return newPaths
 }
 
 export function writeFileSync(filePath: string, data: string) {

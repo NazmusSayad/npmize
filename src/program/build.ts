@@ -6,9 +6,14 @@ import tsc from '../scripts/tsc'
 import { cleanDir, moveFiles } from '../utils'
 import updateImports from '../updateImports'
 import pushNodeCode from '../scripts/pushNodeCode'
+import packageJSON from '../scripts/packageJSON'
 
 export default function (basePath: string, options: Options) {
-  cleanDir(options.outDir)
+  const data = packageJSON.read(basePath)
+  if (data.type) {
+    options.module ??= data.type === 'module' ? 'mjs' : 'cjs'
+  }
+
   console.log(`Build started at ${basePath}`)
   console.log('')
 
@@ -29,6 +34,8 @@ function runBuild(
 
   const tempDir = path.join(basePath, config.tempBuildDir)
   cleanDir(tempDir)
+  cleanDir(options.outDir)
+
   tsc(basePath, [
     ...options.tsc.map((tsc) => `--${tsc}`),
     `--outDir ${tempDir}`,
@@ -36,8 +43,8 @@ function runBuild(
   ])
 
   const files = lskit.sync(tempDir)
-  const renamedFiles = updateImports(moduleType, files)
-  const movedFiles = moveFiles(tempDir, options.outDir, renamedFiles)
+  const updatedImports = updateImports(moduleType, files)
+  const movedFiles = moveFiles(tempDir, options.outDir, updatedImports)
 
   if (moduleType === 'mjs' && options.node && movedFiles.length) {
     console.log('Enabling Node.js __dirname and __filename...')

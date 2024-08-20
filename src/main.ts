@@ -66,6 +66,12 @@ app.create(
         .aliases('t')
         .default([])
         .description("TypeScript's options"),
+
+      node: t
+        .boolean()
+        .aliases('n')
+        .default(false)
+        .description('Enable __dirname and __filename in ES modules'),
     },
   },
 
