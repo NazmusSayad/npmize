@@ -1,11 +1,9 @@
 import fs from 'fs'
-import path from 'path'
 import * as lskit from 'lskit'
-import config from '../config'
 import tsc from '../scripts/tsc'
-import { cleanDir, moveFiles } from '../utils'
 import updateImports from '../updateImports'
 import pushNodeCode from '../scripts/pushNodeCode'
+import { cleanDir, getNodeModulesTempDir, moveFiles } from '../utils'
 
 export default function (basePath: string, options: Options) {
   console.log(`Build started at ${basePath}`)
@@ -28,7 +26,7 @@ function runBuild(
 ) {
   console.log(`Building ${moduleType}...`)
 
-  const tempDir = path.join(basePath, config.tempBuildDir)
+  const tempDir = getNodeModulesTempDir(basePath)
   cleanDir(tempDir)
 
   tsc(basePath, [

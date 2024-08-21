@@ -23,7 +23,7 @@ app
   .create('init', {
     description: 'Initialize a new npm package',
 
-    optionalArguments: [
+    arguments: [
       {
         name: 'name',
         type: t.string().description('Name of the package'),

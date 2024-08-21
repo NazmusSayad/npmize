@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import shelljs from 'shelljs'
+import config from './config'
 import packageJSON from './scripts/packageJSON'
 
 export function cleanDir(dir: string, createDir = true) {
@@ -15,6 +16,21 @@ export function cleanDir(dir: string, createDir = true) {
 
 export function getVersion() {
   return packageJSON.read(path.join(__dirname, '../')).version
+}
+
+export function getNodeModulesTempDir(baseDir: string) {
+  const nodeModulesDir = path.join(baseDir, './node_modules/' + config.name)
+
+  if (fs.existsSync(nodeModulesDir)) {
+    return path.join(nodeModulesDir, config.tempOutDir)
+  } else {
+    const nodeModulesDir = path.join(baseDir, './node_modules')
+    if (fs.existsSync(nodeModulesDir)) {
+      return path.join(nodeModulesDir, config.tempOutDir)
+    }
+  }
+
+  return path.join(baseDir, config.tempOutDir)
 }
 
 export function moveFiles(
