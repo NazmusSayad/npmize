@@ -26,7 +26,11 @@ app
     arguments: [
       {
         name: 'name',
-        type: t.string().description('Name of the package'),
+        type: t
+          .string()
+          .description('Name of the package')
+          // .ask("What's the name of the package?")
+          .default('.'),
       },
     ],
 
