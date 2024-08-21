@@ -29,7 +29,7 @@ app
         type: t
           .string()
           .description('Name of the package')
-          // .ask("What's the name of the package?")
+          .ask("What's the name of the package?")
           .default('.'),
       },
     ],
