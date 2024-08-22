@@ -8,7 +8,9 @@ This package tries to help you to make npm package without thinking about cjs an
 - Very very simple.
 - Very very lightweight.
 - This supports `typescript`.
+- **Compile** to `cjs` and `mjs` without any distraction.
 - Enables `__dirname` and `__filename` for `mjs`(EsModule).
+- Can work with **browser**, **node** everything related to JavaScript.
 
 <a href="https://npmjs.com/package/npmize">
   <img src="https://img.shields.io/npm/v/npmize" alt="npm package"> 
@@ -58,69 +60,23 @@ The interface for command-line usage is fairly simplistic at this stage, as seen
 npmize <command> [options]
 ```
 
+## How to use?
+
+Add the help flag to see what **functionality** are available.
+
+```shell
+npmize --help
+```
+
 ### Example:
 
 ```shell
-npmize dev
+npmize init project-name
+npmize --help
+npmize --help-usage
 ```
 
-_This starts typescript watch mode._
-
-<br/>
-
----
-
-<br/>
-
-## Commands
-
-| Command | Description                   |
-| ------- | ----------------------------- |
-| init    | Initilize `package.json`      |
-| dev     | Start `typescript` watch mode |
-| build   | Build for prod                |
-
-<br/>
-
-## Command Options
-
-| Option       | Description                                                     |
-| ------------ | --------------------------------------------------------------- |
-| --no-install | Not to install required dependencies automatically              |
-| --no-ignore  | Not to add recommended ignore files to .gitignore \| .npmignore |
-| --no-src     | Not to create src/index.ts folder when not exists               |
-
-### Command: `init`
-
-| Option   | Description           |
-| -------- | --------------------- |
-| --bin    | Also add `bin` field  |
-| --legacy | Uses `.js` for fields |
-
-### Command: `dev` & `build`
-
-You can use almost any typescript cli command here by using `--tsc`.
-eg: `--tsc--jsx=react` --> `--jsx react`
-
-Not allowed list: `--project` `--outDir` `--module` `--watch` and their aliases
-
-| Option       | Description                             |
-| ------------ | --------------------------------------- |
-| --module=cjs | This starts dev mode of commonjs module |
-| --module=mjs | This starts dev mode of esmodule module |
-
-<br/>
-
-### Command: `build`
-
-| Option   | Description                                           |
-| -------- | ----------------------------------------------------- |
-| --node   | This enables `__dirname` and `__filename` in esmodule |
-| --legacy | Uses `.js` files and creates package.json with type   |
-
-<br/>
-
----
+- _*This makes your project ready*_
 
 <br/>
 

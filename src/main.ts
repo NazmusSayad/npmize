@@ -9,7 +9,6 @@ import { getVersion } from './utils'
 
 const app = NoArg.create(config.name, {
   description: config.description,
-
   flags: {
     version: t.boolean().aliases('v').description('Show the version'),
   },
@@ -78,17 +77,15 @@ const devAndBuild = {
 
     outDir: t.string().aliases('o').description('Output directory'),
 
-    tsc: t
-      .array(t.string())
-      .aliases('t')
-      .default([])
-      .description("TypeScript's options"),
-
     node: t
       .boolean()
       .aliases('n')
       .default(false)
       .description('Enable __dirname and __filename in ES modules'),
+  },
+
+  config: {
+    enableTrailingArgs: true,
   },
 }
 
@@ -97,10 +94,11 @@ app
     description: 'Start a development',
     ...devAndBuild,
   })
-  .on(([rootArg = '.'], options) => {
+  .on(([rootArg = '.', railingArgs], options) => {
     const rootPath = path.resolve(rootArg as string)
     dev(rootPath, {
       ...options,
+      tsc: railingArgs as string[],
       outDir: options.outDir
         ? path.join(rootPath, options.outDir)
         : path.join(
@@ -116,10 +114,11 @@ app
     description: 'Build the package for production',
     ...devAndBuild,
   })
-  .on(([rootArg = '.'], options) => {
+  .on(([rootArg = '.', railingArgs], options) => {
     const rootPath = path.resolve(rootArg as string)
     build(rootPath, {
       ...options,
+      tsc: railingArgs as string[],
       outDir: options.outDir
         ? path.join(rootPath, options.outDir)
         : path.join(
