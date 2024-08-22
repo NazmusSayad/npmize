@@ -4,9 +4,9 @@
   "version": "1.0.9",
   "bin": "./dist/index.js",
   "scripts": {
-    "lab": "nodemon ./src/__lab.ts",
     "dev": "tsc -w",
-    "build": "tsc"
+    "build": "node ./build.cjs",
+    "lab": "nodemon ./src/__lab.ts"
   },
   "type": "commonjs",
   "dependencies": {
