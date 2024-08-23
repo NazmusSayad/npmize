@@ -4,9 +4,9 @@ import dev from './program/dev'
 import NoArg from 'noarg'
 import init from './program/init'
 import build from './program/build'
-import tsconfigJSON from './scripts/tsconfigJSON'
 import { getVersion } from './utils'
 import ansiColors from 'ansi-colors'
+import { readTSConfig } from './scripts/tsconfig'
 
 const app = NoArg.create(config.name, {
   description: config.description,
@@ -57,6 +57,7 @@ app
   })
   .on(([nameArg = '.'], flags) => {
     const root = path.resolve(nameArg)
+
     init(root, {
       writeSample: flags.demo,
       writePackageJSON: flags.pkg,
@@ -111,17 +112,16 @@ app
     ...devAndBuild,
   })
   .on(([rootArg = '.', railingArgs], options) => {
-    const rootPath = path.resolve(rootArg as string)
+    const rootPath = path.resolve(rootArg)
+    const tsConfig = readTSConfig(rootPath)
+
     dev(rootPath, {
       ...options,
-      tsc: railingArgs as string[],
-      outDir: options.outDir
-        ? path.join(rootPath, options.outDir as string)
-        : path.join(
-            rootPath,
-            tsconfigJSON.read(rootPath)?.compilerOptions?.outDir ??
-              config.defaultOutDir
-          ),
+      tsc: railingArgs,
+      outDir: path.join(
+        rootPath,
+        options.outDir ?? tsConfig?.outDir ?? config.defaultOutDir
+      ),
     })
   })
 
@@ -131,17 +131,16 @@ app
     ...devAndBuild,
   })
   .on(([rootArg = '.', railingArgs], options) => {
-    const rootPath = path.resolve(rootArg as string)
+    const rootPath = path.resolve(rootArg)
+    const tsConfig = readTSConfig(rootPath)
+
     build(rootPath, {
       ...options,
-      tsc: railingArgs as string[],
-      outDir: options.outDir
-        ? path.join(rootPath, options.outDir)
-        : path.join(
-            rootPath,
-            tsconfigJSON.read(rootPath)?.compilerOptions?.outDir ??
-              config.defaultOutDir
-          ),
+      tsc: railingArgs,
+      outDir: path.join(
+        rootPath,
+        options.outDir ?? tsConfig?.outDir ?? config.defaultOutDir
+      ),
     })
   })
 

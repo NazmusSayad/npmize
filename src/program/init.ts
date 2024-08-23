@@ -5,8 +5,8 @@ import config from '../config'
 import ansiColors from 'ansi-colors'
 import packageJSON from '../scripts/packageJSON'
 import { writeFileSync } from '../utils'
-import tsconfigJSON from '../scripts/tsconfigJSON'
 import ghWorkflows from '../scripts/ghWorkflows'
+import { updateTSConfig } from '../scripts/tsconfig'
 
 export default function (basePath: string, options: InitOptions) {
   console.log(`\x1b[1m\x1b[35m▓▒░ NPMIZE ░▒▓\x1b[0m\n`)
@@ -46,37 +46,26 @@ export default function (basePath: string, options: InitOptions) {
   }
 
   if (options.writeTSConfig) {
-    const oldTSConfig = tsconfigJSON.read(basePath)
-    const newTSConfig = {
-      compilerOptions: {
-        target: 'es6',
-        skipLibCheck: true,
-
-        declaration: true,
-        inlineSourceMap: false,
-
-        strict: true,
-        pretty: true,
-        removeComments: true,
-      },
-      include: ['./src'],
-    }
-
-    const mixedTsconfig = {
-      ...oldTSConfig,
-      ...newTSConfig,
-      compilerOptions: {
-        ...oldTSConfig.compilerOptions,
-        ...newTSConfig.compilerOptions,
-      },
-      include: Array.from(
-        new Set([...(oldTSConfig.include ?? []), ...newTSConfig.include])
-      ),
-    }
-
-    writeFileSync(
+    updateTSConfig(
       path.join(basePath, './tsconfig.json'),
-      JSON.stringify(mixedTsconfig, null, 2)
+      {
+        compilerOptions: {
+          baseUrl: '.',
+
+          target: 'ES6' as any,
+          skipLibCheck: true,
+
+          declaration: true,
+          inlineSourceMap: false,
+
+          strict: true,
+          pretty: true,
+          removeComments: true,
+        },
+
+        include: ['./src'],
+      },
+      true
     )
   }
 
