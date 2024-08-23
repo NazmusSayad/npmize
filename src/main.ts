@@ -1,16 +1,17 @@
 import path from 'path'
 import config from './config'
 import dev from './program/dev'
-import NoArg, { t } from 'noarg'
+import NoArg from 'noarg'
 import init from './program/init'
 import build from './program/build'
 import tsconfigJSON from './scripts/tsconfigJSON'
 import { getVersion } from './utils'
+import ansiColors from 'ansi-colors'
 
 const app = NoArg.create(config.name, {
   description: config.description,
   flags: {
-    version: t.boolean().aliases('v').description('Show the version'),
+    version: NoArg.boolean().aliases('v').description('Show the version'),
   },
 }).on((_, flags) => {
   if (flags.version) {
@@ -25,8 +26,7 @@ app
     arguments: [
       {
         name: 'name',
-        type: t
-          .string()
+        type: NoArg.string()
           .description('Name of the package')
           .ask("What's the name of the package?")
           .default('.'),
@@ -34,18 +34,25 @@ app
     ],
 
     flags: {
-      pkg: t.boolean().default(true).description("Write 'package.json'"),
-      install: t.boolean().default(true).description('Install TypeScript'),
-      tsconfig: t.boolean().default(true).description('Write "tsconfig.json"'),
-      demo: t.boolean().default(true).description('Write a sample file'),
-      workflow: t.boolean().default(true).description('Write a workflow file'),
+      pkg: NoArg.boolean().default(true).description("Write 'package.json'"),
+      install: NoArg.boolean().default(true).description('Install TypeScript'),
+      tsconfig: NoArg.boolean()
+        .default(true)
+        .description('Write "tsconfig.json"'),
+      demo: NoArg.boolean().default(true).description('Write a sample file'),
+      workflow: NoArg.boolean()
+        .default(true)
+        .description('Write a workflow file'),
 
-      ignore: t
-        .boolean()
+      ignore: NoArg.boolean()
         .default(true)
         .description("Write '.gitignore' and '.npmignore'"),
-      npmignore: t.boolean().default(true).description("Write '.npmignore'"),
-      gitignore: t.boolean().default(true).description("Write '.gitignore'"),
+      npmignore: NoArg.boolean()
+        .default(true)
+        .description("Write '.npmignore'"),
+      gitignore: NoArg.boolean()
+        .default(true)
+        .description("Write '.gitignore'"),
     },
   })
   .on(([nameArg = '.'], flags) => {
@@ -61,24 +68,22 @@ app
     })
   })
 
-const devAndBuild = {
+const devAndBuild = NoArg.createConfig({
   optionalArguments: [
     {
       name: 'root',
-      type: t.string().description('Root directory'),
+      type: NoArg.string().description('Root directory'),
     },
   ],
 
   flags: {
-    module: t
-      .string('cjs', 'mjs')
+    module: NoArg.string('cjs', 'mjs')
       .aliases('m')
       .description("Output module's type"),
 
-    outDir: t.string().aliases('o').description('Output directory'),
+    outDir: NoArg.string().aliases('o').description('Output directory'),
 
-    node: t
-      .boolean()
+    node: NoArg.boolean()
       .aliases('n')
       .default(false)
       .description('Enable __dirname and __filename in ES modules'),
@@ -86,8 +91,19 @@ const devAndBuild = {
 
   config: {
     enableTrailingArgs: true,
+    trailingArgsSeparator: '--tsc',
   },
-}
+
+  notes: [
+    `Arguments after "${ansiColors.yellow(
+      '--tsc'
+    )}" will be passed to ${ansiColors.yellow('TypeScript')} compiler.`,
+
+    ['--project', '--module', '--outDir', '--watch']
+      .map((flag) => ansiColors.yellow(flag))
+      .join(', ') + ' and their aliases are ignored.',
+  ],
+})
 
 app
   .create('dev', {
@@ -100,7 +116,7 @@ app
       ...options,
       tsc: railingArgs as string[],
       outDir: options.outDir
-        ? path.join(rootPath, options.outDir)
+        ? path.join(rootPath, options.outDir as string)
         : path.join(
             rootPath,
             tsconfigJSON.read(rootPath)?.compilerOptions?.outDir ??

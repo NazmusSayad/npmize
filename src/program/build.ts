@@ -30,7 +30,7 @@ function runBuild(
   cleanDir(tempDir)
 
   tsc(basePath, [
-    ...options.tsc.map((tsc) => `--${tsc}`),
+    ...options.tsc,
     `--outDir ${tempDir}`,
     `--module ${moduleType === 'cjs' ? 'commonjs' : 'esnext'}`,
   ])

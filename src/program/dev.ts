@@ -30,7 +30,7 @@ export default function (basePath: string, options: DevOptions) {
   tsc(
     basePath,
     [
-      ...options.tsc.map((tsc) => `--${tsc}`),
+      ...options.tsc,
       `--outDir ${tempDir}`,
       `--module ${options.module === 'cjs' ? 'commonjs' : 'esnext'}`,
       '--watch',
