@@ -69,7 +69,7 @@ app
     })
   })
 
-const devAndBuild = NoArg.createConfig({
+const devAndBuild = NoArg.defineConfig({
   optionalArguments: [
     {
       name: 'root',
