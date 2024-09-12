@@ -18,19 +18,20 @@ export function getVersion() {
   return packageJSON.read(path.join(__dirname, '../')).version
 }
 
-export function getNodeModulesTempDir(baseDir: string) {
+export function getNodeModulesTempDir(baseDir: string, suffix: string) {
   const nodeModulesDir = path.join(baseDir, './node_modules/' + config.name)
+  const outDir = './.temp-dist-' + suffix
 
   if (fs.existsSync(nodeModulesDir)) {
-    return path.join(nodeModulesDir, config.tempOutDir)
+    return path.join(nodeModulesDir, outDir)
   } else {
     const nodeModulesDir = path.join(baseDir, './node_modules')
     if (fs.existsSync(nodeModulesDir)) {
-      return path.join(nodeModulesDir, config.tempOutDir)
+      return path.join(nodeModulesDir, outDir)
     }
   }
 
-  return path.join(baseDir, config.tempOutDir)
+  throw new Error('Could not find node_modules directory')
 }
 
 export function moveFiles(

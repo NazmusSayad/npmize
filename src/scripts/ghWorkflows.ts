@@ -1,6 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-import config from '../config'
 import ansiColors from 'ansi-colors'
 import { confirmDir, getNodeVersion } from '../utils'
 
@@ -46,7 +45,7 @@ jobs:
 }
 
 export default function (baseDir: string) {
-  const workflowDir = confirmDir(baseDir, config.ghWorkflowDir)
+  const workflowDir = confirmDir(baseDir, './.github/workflows')
   const publishWorkflowPath = path.join(workflowDir, 'npm-publish.yml')
 
   fs.writeFileSync(

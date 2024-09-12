@@ -91,3 +91,27 @@ export function updateTSConfig(
   const updatedConfigString = JSON.stringify(updatedConfig, null, 2)
   fs.writeFileSync(configFilePath, updatedConfigString, 'utf-8')
 }
+
+export function resolveImportPath(
+  baseUrl: string,
+  importPath: string,
+  paths: Record<string, string[]>
+): string | undefined {
+  const moduleResolutionHost: ts.ModuleResolutionHost = {
+    fileExists: ts.sys.fileExists,
+    readFile: ts.sys.readFile,
+    realpath: ts.sys.realpath,
+    getCurrentDirectory: () => baseUrl,
+    getDirectories: ts.sys.getDirectories,
+    directoryExists: ts.sys.directoryExists,
+  }
+
+  const resolved = ts.resolveModuleName(
+    importPath,
+    baseUrl,
+    { baseUrl, paths },
+    moduleResolutionHost
+  )
+
+  return resolved.resolvedModule?.resolvedFileName
+}

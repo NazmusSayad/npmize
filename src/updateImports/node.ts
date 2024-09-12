@@ -1,13 +1,14 @@
+import { Statement } from '@babel/types'
 import { findNestedItems, isOkString, parseString } from './utils'
 
-export const TSImportType = (parsed: any) => {
+export const TSImportType = (parsed: Statement[]) => {
   return findNestedItems(parsed, 'type', 'TSImportType')
     .filter((node) => isOkString(node.argument))
     .map((node) => parseString(node.argument))
 }
 
 export const ImportDeclaration_ExportNamedDeclaration_ExportAllDeclaration = (
-  parsed: any
+  parsed: Statement[]
 ) => {
   return [
     findNestedItems(parsed, 'type', 'ImportDeclaration'),
@@ -20,7 +21,7 @@ export const ImportDeclaration_ExportNamedDeclaration_ExportAllDeclaration = (
     .map((node) => parseString(node.source))
 }
 
-export const CallExpressionImport = (parsed: any) => {
+export const CallExpressionImport = (parsed: Statement[]) => {
   return findNestedItems(parsed, 'type', 'CallExpression')
     .filter(
       (node) =>
@@ -32,7 +33,7 @@ export const CallExpressionImport = (parsed: any) => {
     .map((node) => parseString(node.arguments[0]))
 }
 
-export const CallExpressionRequire = (parsed: any) => {
+export const CallExpressionRequire = (parsed: Statement[]) => {
   return findNestedItems(parsed, 'type', 'CallExpression')
     .filter(
       (node) =>

@@ -1,96 +1,80 @@
 # npmize
 
-This package tries to help you to make npm package without thinking about cjs and mjs module.
+This package simplifies creating npm packages that work seamlessly across browsers and Node.js environments by handling CommonJS (CJS) and ES modules (ESM) for you.
 
-## Features
+# Features
 
-- Zero Config.
-- Very very simple.
-- Very very lightweight.
-- This supports `typescript`.
-- **Compile** to `cjs` and `mjs` without any distraction.
-- Enables `__dirname` and `__filename` for `mjs`(EsModule).
-- Can work with **browser**, **node** everything related to JavaScript.
+- **TypeScript Support:** Compile TypeScript code with ease.
+- **Zero Configuration:** Get started without any complex setup.
+- **Universal Compatibility:** Works across browsers and Node.js.
+- **ESM and CJS Compilation:** Compiles code to both CJS and ESM formats.
+- **Simple and Lightweight:** Easy to use and maintains a small footprint.
+- **Path Conversion:** Converts TypeScript config paths to relative paths for compatibility.
+- **ESM `__dirname` and `__filename` Support:** Enables these variables for ESM compatibility.
 
-<a href="https://npmjs.com/package/npmize">
-  <img src="https://img.shields.io/npm/v/npmize" alt="npm package"> 
-</a>
+# Installation
 
----
+**Locally:**
 
-## Installation
-
-- with npm (globally)
-
-```shell
-npm i -g npmize
+```bash
+npm install -D npmize
 ```
 
-- with npm
+**Yarn:**
 
-```shell
-npm i -D npmize
-```
-
-- with yarn
-
-```shell
+```bash
 yarn add -D npmize
 ```
 
-- with pnpm
+**pnpm:**
 
-```shell
+```bash
 pnpm add -D npmize
 ```
 
-<br/>
+# Usage
 
----
-
-<br/>
-
-# Command Line Interface
-
-The interface for command-line usage is fairly simplistic at this stage, as seen in the following usage section.
-
-## Usage
-
-```shell
+```bash
 npmize <command> [options]
 ```
 
-## How to use?
+**Example:**
 
-Add the help flag to see what **functionality** are available.
+1. Initialize a new project:
 
-```shell
-npmize --help
+   ```bash
+   npmize init project-name
+   ```
+
+2. Get help information:
+
+   ```bash
+   npmize --help
+   npmize --help-usage
+   ```
+
+<br />
+
+## TypeScript Path Handling:
+
+If you use TypeScript paths, ensure `baseUrl` is set in your `tsconfig.json`. For files within a `src` directory, set `baseUrl` to `./src`.
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "outDir": "./dist",
+    "paths": { "@/*": ["./*"] }
+  },
+  "include": ["./src"]
+}
 ```
 
-### Example:
+# Notes
 
-```shell
-npmize init project-name
-npmize --help
-npmize --help-usage
-```
+- **Variable Naming:** Avoid using `VGhpcyBuYW1lIGlzIGFscmVhZHkgdXNlZCB0byBlbmFibGUgX19kaXJuYW1lIGFuZCBfX2ZpbGVuYW1lIDop` (encoded using Base64) as a top-level variable name.
 
-- _*This makes your project ready*_
+<br />
+<br />
 
-<br/>
-
-## **Note:**
-
-- You should use --module=cjs with dev mode when working with packages for node because `__dirname` and `__filename` isn't supported in esmodule in dev mode
-- Do not use `VGhpcyBuYW1lIGlzIGFscmVhZHkgdXNlZCB0byBlbmFibGUgX19kaXJuYW1lIGFuZCBfX2ZpbGVuYW1lIDop` as a variable name in your top level code.
-
-  - If you want to know why! [`Base64`](https://www.base64decode.org) ... Hope you know.
-
-- If you don't star our github repo your wife will divorce you, Else if you don't have wife then you will never get her.
-
-<br/>
-
----
-
-Made by [Nazmus Sayad](https://github.com/NazmusSayad) with ❤️.
+Made with ❤️ by [Nazmus Sayad](https://github.com/NazmusSayad).

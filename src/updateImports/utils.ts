@@ -1,4 +1,5 @@
 import * as fs from 'fs'
+import { NodeType } from './types.t'
 
 export const getUpdatedData = (fileData: any, found: any[], cb: any) => {
   const newEntries = [
@@ -20,10 +21,10 @@ export const getUpdatedData = (fileData: any, found: any[], cb: any) => {
 }
 
 export const isOkString = (node: any) => {
-  return node && node.type === 'StringLiteral' && node.value.startsWith('.')
+  return node && node.type === 'StringLiteral'
 }
 
-export const parseString = (str: any) => ({
+export const parseString = (str: any): NodeType => ({
   start: str.start,
   end: str.end,
   value: str.value,

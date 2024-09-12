@@ -1,44 +1,55 @@
 import fs from 'fs'
+import path from 'path'
 import * as lskit from 'lskit'
 import tsc from '../scripts/tsc'
+import { CompileOptions } from './types.t'
 import updateImports from '../updateImports'
 import pushNodeCode from '../scripts/pushNodeCode'
 import { cleanDir, getNodeModulesTempDir, moveFiles } from '../utils'
 
-export default function (basePath: string, options: Options) {
-  console.log(`Build started at ${basePath}`)
+export default function (rootPath: string, options: CompileOptions) {
+  console.log(`Build started at ${rootPath}`)
   console.log('')
 
-  cleanDir(options.outDir)
+  const outDir = path.resolve(options.tsConfig?.outDir!)
+  cleanDir(outDir)
 
   if (options.module) {
-    runBuild(options.module, basePath, options)
+    runBuild(rootPath, outDir, options.module, options)
   } else {
-    runBuild('cjs', basePath, options)
-    runBuild('mjs', basePath, options)
+    runBuild(rootPath, outDir, 'cjs', options)
+    runBuild(rootPath, outDir, 'mjs', options)
   }
 }
 
 function runBuild(
-  moduleType: Exclude<Options['module'], undefined>,
-  basePath: string,
-  options: Omit<Options, 'module'>
+  rootPath: string,
+  outDir: string,
+  moduleType: Exclude<CompileOptions['module'], undefined>,
+  options: Omit<CompileOptions, 'module' | 'outDir'>
 ) {
   console.log(`Building ${moduleType}...`)
 
-  const tempDir = getNodeModulesTempDir(basePath)
-  cleanDir(tempDir)
+  const tempOutDir = getNodeModulesTempDir(rootPath, 'build-' + moduleType)
+  cleanDir(tempOutDir)
 
-  tsc(basePath, [
+  tsc(rootPath, [
     ...options.tsc,
-    `--outDir ${tempDir}`,
+    `--outDir ${tempOutDir}`,
     `--module ${moduleType === 'cjs' ? 'commonjs' : 'esnext'}`,
   ])
 
-  const files = lskit.sync(tempDir)
-  const updatedImports = updateImports(moduleType, files)
-  const movedFiles = moveFiles(tempDir, options.outDir, updatedImports)
+  const files = lskit.sync(tempOutDir)
+  const updatedImports = updateImports(
+    rootPath,
+    tempOutDir,
+    options.tsConfig?.baseUrl,
+    options.tsConfig?.paths,
+    moduleType,
+    files
+  )
 
+  const movedFiles = moveFiles(tempOutDir, outDir, updatedImports)
   if (moduleType === 'mjs' && options.node && movedFiles.length) {
     console.log('Enabling Node.js __dirname and __filename...')
     pushNodeCode(...movedFiles)
@@ -61,13 +72,6 @@ function runBuild(
     ).toFixed(2)}KB`
   )
 
-  cleanDir(tempDir, false)
+  cleanDir(tempOutDir, false)
   console.log('')
-}
-
-type Options = {
-  tsc: string[]
-  node: boolean
-  outDir: string
-  module?: 'cjs' | 'mjs'
 }

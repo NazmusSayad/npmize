@@ -50,7 +50,8 @@ export default function (basePath: string, options: InitOptions) {
       path.join(basePath, './tsconfig.json'),
       {
         compilerOptions: {
-          baseUrl: '.',
+          baseUrl: './src',
+          outDir: './dist',
 
           target: 'ES6' as any,
           skipLibCheck: true,
@@ -61,6 +62,10 @@ export default function (basePath: string, options: InitOptions) {
           strict: true,
           pretty: true,
           removeComments: true,
+
+          paths: {
+            '@/*': ['./*'],
+          },
         },
 
         include: ['./src'],

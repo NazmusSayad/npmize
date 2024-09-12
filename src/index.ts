@@ -1,4 +1,5 @@
 #!/usr/bin/env node
 
-import app from './main'
+import { app } from './app'
+import './main'
 app.start()
