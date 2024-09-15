@@ -23,16 +23,8 @@ export default function (basePath: string, options: InitOptions) {
 
     delete data.main
     delete data.module
-    delete data.exports
-
     data.main = './dist/index.cjs'
     data.module = './dist/index.mjs'
-    data.exports = {
-      '.': {
-        require: './dist/index.cjs',
-        import: './dist/index.mjs',
-      },
-    }
 
     packageJSON.write(basePath, data)
   } else {
@@ -57,11 +49,7 @@ export default function (basePath: string, options: InitOptions) {
           skipLibCheck: true,
 
           declaration: true,
-          inlineSourceMap: false,
-
           strict: true,
-          pretty: true,
-          removeComments: true,
 
           paths: {
             '@/*': ['./*'],

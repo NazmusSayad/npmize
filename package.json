@@ -1,7 +1,7 @@
 {
   "name": "npmize",
   "description": "Let's create an npm package without worrying about anything.",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "bin": "./dist/index.js",
   "scripts": {
     "dev": "tsc -w",
