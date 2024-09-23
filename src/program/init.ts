@@ -1,12 +1,12 @@
 import fs from 'fs'
 import path from 'path'
-import shelljs from 'shelljs'
-import config from '../config'
+import crossSpawn from 'cross-spawn'
 import ansiColors from 'ansi-colors'
+import { updateTSConfig } from '../scripts/tsconfig'
+import ghWorkflows from '../scripts/ghWorkflows'
 import packageJSON from '../scripts/packageJSON'
 import { writeFileSync } from '../utils'
-import ghWorkflows from '../scripts/ghWorkflows'
-import { updateTSConfig } from '../scripts/tsconfig'
+import config from '../config'
 
 export default function (basePath: string, options: InitOptions) {
   console.log(`\x1b[1m\x1b[35m▓▒░ NPMIZE ░▒▓\x1b[0m\n`)
@@ -32,7 +32,10 @@ export default function (basePath: string, options: InitOptions) {
   }
 
   if (options.installPackages) {
-    shelljs.cd(basePath).exec('npm install npmize typescript --save-dev')
+    crossSpawn.sync('npm', ['install', '--save-dev', 'typescript', 'ts-node'], {
+      cwd: basePath,
+      stdio: 'inherit',
+    })
   } else {
     console.log(ansiColors.bgGreen(' INFO: '), 'TypeScript is disabled')
   }

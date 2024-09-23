@@ -1,30 +1,35 @@
+import {
+  cleanDir,
+  moveFiles,
+  getAllFiles,
+  getNodeModulesTempDir,
+} from '../utils'
 import fs from 'fs'
 import path from 'path'
-import * as lskit from 'lskit'
 import tsc from '../scripts/tsc'
 import { CompileOptions } from './types.t'
 import updateImports from '../updateImports'
 import pushNodeCode from '../scripts/pushNodeCode'
-import { cleanDir, getNodeModulesTempDir, moveFiles } from '../utils'
 
 export default function (rootPath: string, options: CompileOptions) {
   console.log(`Build started at ${rootPath}`)
   console.log('')
 
   const outDir = path.resolve(options.tsConfig?.outDir!)
+  if (!outDir) throw new Error('tsConfig.outDir is required')
   cleanDir(outDir)
 
   if (options.module) {
-    runBuild(rootPath, outDir, options.module, options)
-  } else {
-    runBuild(rootPath, outDir, 'cjs', options)
-    runBuild(rootPath, outDir, 'mjs', options)
+    return runBuild(rootPath, outDir, options.module, options)
   }
+
+  runBuild(rootPath, outDir, 'cjs', options)
+  runBuild(rootPath, outDir, 'mjs', options)
 }
 
 function runBuild(
   rootPath: string,
-  outDir: string,
+  fullOutDir: string,
   moduleType: Exclude<CompileOptions['module'], undefined>,
   options: Omit<CompileOptions, 'module' | 'outDir'>
 ) {
@@ -35,11 +40,13 @@ function runBuild(
 
   tsc(rootPath, [
     ...options.tsc,
-    `--outDir ${tempOutDir}`,
-    `--module ${moduleType === 'cjs' ? 'commonjs' : 'esnext'}`,
+    '--outDir',
+    tempOutDir,
+    '--module',
+    moduleType === 'cjs' ? 'commonjs' : 'esnext',
   ])
 
-  const files = lskit.sync(tempOutDir)
+  const files = getAllFiles(tempOutDir)
   const updatedImports = updateImports(
     rootPath,
     tempOutDir,
@@ -49,7 +56,7 @@ function runBuild(
     files
   )
 
-  const movedFiles = moveFiles(tempOutDir, outDir, updatedImports)
+  const movedFiles = moveFiles(tempOutDir, fullOutDir, updatedImports)
   if (moduleType === 'mjs' && options.node && movedFiles.length) {
     console.log('Enabling Node.js __dirname and __filename...')
     pushNodeCode(...movedFiles)

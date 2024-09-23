@@ -1,5 +1,8 @@
-import shelljs from 'shelljs'
+import crossSpawn from 'cross-spawn'
 
 export default function (cwd: string, args: string[], async = false) {
-  shelljs.exec(['npx', 'tsc', ...args].join(' '), { cwd, async })
+  crossSpawn.sync('npx', ['tsc', ...args], {
+    cwd,
+    stdio: 'inherit',
+  })
 }

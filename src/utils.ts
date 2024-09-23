@@ -1,8 +1,8 @@
 import fs from 'fs'
 import path from 'path'
-import shelljs from 'shelljs'
-import config from './config'
+import crossSpawn from 'cross-spawn'
 import packageJSON from './scripts/packageJSON'
+import config from './config'
 
 export function cleanDir(dir: string, createDir = true) {
   if (fs.existsSync(dir)) {
@@ -75,8 +75,20 @@ export function confirmDir(...paths: string[]) {
 }
 
 export function getNodeVersion() {
-  const nodeVersion = shelljs.exec('node -v', { silent: true }).stdout.trim()
+  const nodeVersion = crossSpawn.sync('node', ['-v']).stdout.toString().trim()
   if (nodeVersion) {
     return Number.parseInt(nodeVersion.replace('v', ''))
   }
+}
+
+export function getAllFiles(dir: string): string[] {
+  const getTarget = (target: string): string[] => {
+    if (fs.statSync(target).isFile()) return [target]
+
+    return fs
+      .readdirSync(target)
+      .flatMap((file) => getTarget(path.join(target, file)))
+  }
+
+  return getTarget(dir)
 }

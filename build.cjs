@@ -1,5 +1,5 @@
-const shelljs = require('shelljs')
+const crossSpawn = require('cross-spawn')
 const fs = require('fs')
 
 fs.rmSync('./dist', { recursive: true, force: true })
-shelljs.exec('tsc')
+crossSpawn.sync('tsc', { stdio: 'inherit' })

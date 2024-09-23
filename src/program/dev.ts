@@ -7,12 +7,27 @@ import pushNodeCode from '../scripts/pushNodeCode'
 import { cleanDir, getNodeModulesTempDir, moveFiles } from '../utils'
 
 export default function (rootPath: string, options: CompileOptions) {
-  options.module ??= 'cjs'
+  const outDir = options.tsConfig?.outDir
+  if (!outDir) throw new Error('tsConfig.outDir is required')
 
-  const finalOutDir = path.resolve(options.tsConfig?.outDir!)
+  if (options.module) {
+    return runDev(rootPath, outDir, options.module, options)
+  }
+
+  runDev(rootPath, outDir, 'cjs', options)
+  runDev(rootPath, outDir, 'mjs', options)
+}
+
+function runDev(
+  rootPath: string,
+  shortOutDir: string,
+  moduleType: Exclude<CompileOptions['module'], undefined>,
+  options: Omit<CompileOptions, 'module' | 'outDir'>
+) {
+  const finalOutDir = path.resolve(shortOutDir)
   cleanDir(finalOutDir)
 
-  const tempOutDir = getNodeModulesTempDir(rootPath, 'dev-' + options.module)
+  const tempOutDir = getNodeModulesTempDir(rootPath, 'dev-' + moduleType)
   cleanDir(tempOutDir)
 
   function makeOutFiles(filename: string, outModule: 'cjs' | 'mjs') {
@@ -35,15 +50,17 @@ export default function (rootPath: string, options: CompileOptions) {
   fs.watch(tempOutDir, { recursive: true }, (event, filename) => {
     if (event !== 'change' || !filename) return
     if (!(filename.endsWith('.js') || filename.endsWith('.ts'))) return
-    makeOutFiles(filename, options.module!)
+    makeOutFiles(filename, moduleType)
   })
 
   tsc(
     rootPath,
     [
       ...options.tsc,
-      `--outDir ${tempOutDir}`,
-      `--module ${options.module === 'cjs' ? 'commonjs' : 'esnext'}`,
+      '--outDir',
+      tempOutDir,
+      '--module',
+      moduleType === 'cjs' ? 'commonjs' : 'esnext',
       '--watch',
     ],
     true
