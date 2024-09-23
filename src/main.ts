@@ -47,8 +47,8 @@ app.dev.on(([rootArg = '.', railingArgs], options) => {
 
   dev(rootPath, {
     ...options,
-    tsConfig,
     tsc: railingArgs,
+    tsConfig: { ...tsConfig, outDir: tsConfig.outDir },
   })
 })
 
@@ -72,7 +72,7 @@ app.build.on(([rootArg = '.', railingArgs], options) => {
 
   build(rootPath, {
     ...options,
-    tsConfig,
     tsc: railingArgs,
+    tsConfig: { ...tsConfig, outDir: tsConfig.outDir },
   })
 })

@@ -1,30 +1,22 @@
-import {
-  cleanDir,
-  moveFiles,
-  getAllFiles,
-  getNodeModulesTempDir,
-} from '../utils'
 import fs from 'fs'
-import path from 'path'
 import tsc from '../scripts/tsc'
 import { CompileOptions } from './types.t'
-import updateImports from '../updateImports'
-import pushNodeCode from '../scripts/pushNodeCode'
+import makeOutput from '../scripts/makeOutputFile'
+import { getNodeModulesTempDir } from '../utils'
+import { cleanDir, getAllFiles } from '../utils/fs'
 
 export default function (rootPath: string, options: CompileOptions) {
   console.log(`Build started at ${rootPath}`)
   console.log('')
 
-  const outDir = path.resolve(options.tsConfig?.outDir!)
-  if (!outDir) throw new Error('tsConfig.outDir is required')
-  cleanDir(outDir)
+  cleanDir(options.tsConfig.outDir)
 
   if (options.module) {
-    return runBuild(rootPath, outDir, options.module, options)
+    return runBuild(rootPath, options.tsConfig.outDir, options.module, options)
   }
 
-  runBuild(rootPath, outDir, 'cjs', options)
-  runBuild(rootPath, outDir, 'mjs', options)
+  runBuild(rootPath, options.tsConfig.outDir, 'cjs', options)
+  runBuild(rootPath, options.tsConfig.outDir, 'mjs', options)
 }
 
 function runBuild(
@@ -46,23 +38,20 @@ function runBuild(
     moduleType === 'cjs' ? 'commonjs' : 'esnext',
   ])
 
-  const files = getAllFiles(tempOutDir)
-  const updatedImports = updateImports(
-    rootPath,
-    tempOutDir,
-    options.tsConfig?.baseUrl,
-    options.tsConfig?.paths,
-    moduleType,
-    files
-  )
+  const newFiles = getAllFiles(tempOutDir).map((file) => {
+    return makeOutput(file, {
+      tempOutDir: tempOutDir,
+      finalOutDir: fullOutDir,
+      moduleType: moduleType,
+      pushNodeCode: options.node,
+      tsConfig: {
+        paths: options.tsConfig?.paths,
+        baseUrl: options.tsConfig?.baseUrl,
+      },
+    })
+  })
 
-  const movedFiles = moveFiles(tempOutDir, fullOutDir, updatedImports)
-  if (moduleType === 'mjs' && options.node && movedFiles.length) {
-    console.log('Enabling Node.js __dirname and __filename...')
-    pushNodeCode(...movedFiles)
-  }
-
-  const fileSizes = movedFiles
+  const fileSizes = newFiles
     .filter((a) => a.endsWith('js'))
     .map((file) => {
       const stat = fs.statSync(file)

@@ -2,55 +2,50 @@ import fs from 'fs'
 import path from 'path'
 import tsc from '../scripts/tsc'
 import { CompileOptions } from './types.t'
-import updateImports from '../updateImports'
-import pushNodeCode from '../scripts/pushNodeCode'
-import { cleanDir, getNodeModulesTempDir, moveFiles } from '../utils'
+import makeOutput from '../scripts/makeOutputFile'
+import { getNodeModulesTempDir } from '../utils'
+import { cleanDir } from '../utils/fs'
 
-export default function (rootPath: string, options: CompileOptions) {
-  const outDir = options.tsConfig?.outDir
-  if (!outDir) throw new Error('tsConfig.outDir is required')
-
+export default function (
+  rootPath: string,
+  options: CompileOptions & { focus: 'cjs' | 'mjs' }
+) {
   if (options.module) {
-    return runDev(rootPath, outDir, options.module, options)
+    return runDev(rootPath, options.tsConfig.outDir, options.module, options)
   }
 
-  runDev(rootPath, outDir, 'cjs', options)
-  runDev(rootPath, outDir, 'mjs', options)
+  runDev(rootPath, options.tsConfig.outDir, 'cjs', options)
+  runDev(rootPath, options.tsConfig.outDir, 'mjs', options)
 }
 
 function runDev(
   rootPath: string,
   shortOutDir: string,
   moduleType: Exclude<CompileOptions['module'], undefined>,
-  options: Omit<CompileOptions, 'module' | 'outDir'>
+  options: Omit<CompileOptions, 'module' | 'outDir'> & { focus: 'cjs' | 'mjs' }
 ) {
-  const finalOutDir = path.resolve(shortOutDir)
-  cleanDir(finalOutDir)
-
   const tempOutDir = getNodeModulesTempDir(rootPath, 'dev-' + moduleType)
+  const finalOutDir = path.resolve(shortOutDir)
   cleanDir(tempOutDir)
-
-  function makeOutFiles(filename: string, outModule: 'cjs' | 'mjs') {
-    const fullPath = path.join(tempOutDir, filename)
-    if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
-      const updatedImports = updateImports(
-        rootPath,
-        tempOutDir,
-        options.tsConfig?.baseUrl,
-        options.tsConfig?.paths,
-        outModule,
-        [fullPath]
-      )
-
-      const [movedFile] = moveFiles(tempOutDir, finalOutDir, updatedImports)
-      if (outModule === 'mjs' && options.node) pushNodeCode(movedFile)
-    }
-  }
+  cleanDir(finalOutDir)
 
   fs.watch(tempOutDir, { recursive: true }, (event, filename) => {
     if (event !== 'change' || !filename) return
     if (!(filename.endsWith('.js') || filename.endsWith('.ts'))) return
-    makeOutFiles(filename, moduleType)
+
+    const filePath = path.join(tempOutDir, filename)
+    if (!(fs.existsSync(filePath) && fs.statSync(filePath).isFile())) return
+
+    makeOutput(filePath, {
+      tempOutDir: tempOutDir,
+      finalOutDir: finalOutDir,
+      moduleType: moduleType,
+      pushNodeCode: options.node,
+      tsConfig: {
+        baseUrl: options.tsConfig?.baseUrl,
+        paths: options.tsConfig?.paths,
+      },
+    })
   })
 
   tsc(
@@ -63,6 +58,9 @@ function runDev(
       moduleType === 'cjs' ? 'commonjs' : 'esnext',
       '--watch',
     ],
-    true
+    {
+      async: true,
+      stdio: moduleType === options.focus ? 'inherit' : 'ignore',
+    }
   )
 }

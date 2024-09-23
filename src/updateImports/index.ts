@@ -22,84 +22,76 @@ const getRequires = (parsed: Statement[]) => {
 }
 
 export default (
-  rootDir: string,
-  currentOutDir: string,
-  tsconfigBaseUrl: string | undefined,
-  tsconfigPaths: Record<string, string[]> | undefined,
-
+  cwd: string,
+  filePath: string,
   moduleType: 'cjs' | 'mjs',
-  files: string[]
+  tsconfigBaseUrl: string | undefined,
+  tsconfigPaths: Record<string, string[]> | undefined
 ) => {
   const ext = '.' + moduleType
+  const dirPath = path.dirname(filePath)
+  const data = fs.readFileSync(filePath, 'utf-8')
 
-  return Object.fromEntries(
-    files.map((filePath) => {
-      const dirPath = path.dirname(filePath)
-      const data = fs.readFileSync(filePath, 'utf-8')
-      const parsedBody = babel.parse(data, {
-        sourceType: 'module',
-        plugins: ['typescript'],
-        sourceFilename: filePath,
-      }).program.body
+  const parsedBody = babel.parse(data, {
+    sourceType: 'module',
+    plugins: ['typescript'],
+    sourceFilename: filePath,
+  }).program.body
 
-      const foundImportPaths =
-        filePath.endsWith('.ts') || moduleType === 'mjs'
-          ? getImports(parsedBody)
-          : getRequires(parsedBody)
+  const foundImportPaths =
+    filePath.endsWith('.ts') || moduleType === 'mjs'
+      ? getImports(parsedBody)
+      : getRequires(parsedBody)
 
-      function updateRelativeImports(node: NodeType) {
-        const shortPath = node.value.replace(/\.js$/i, '')
-        const fullPath = path.join(dirPath, node.value)
+  function updateRelativeImports(node: NodeType) {
+    const shortPath = node.value.replace(/\.js$/i, '')
+    const fullPath = path.join(dirPath, node.value)
 
-        const isExists = utils.isFileExists(files, fullPath)
-        return isExists ? shortPath + ext : shortPath + '/index' + ext
+    const isExists = utils.isFileExists(fullPath)
+    return isExists ? shortPath + ext : shortPath + '/index' + ext
+  }
+
+  function updateResolvedPath(baseUrl: string, resolvedPath: string) {
+    const relativeToCurrentOutDir = path.join(
+      cwd,
+      path.relative(baseUrl, resolvedPath)
+    )
+
+    const shortPath = path.relative(
+      path.dirname(filePath),
+      relativeToCurrentOutDir
+    )
+
+    const shortestPathWithExt =
+      path.dirname(shortPath) + '/' + path.parse(shortPath).name + ext
+
+    const posixSortPathWithExt = path
+      .normalize(shortestPathWithExt)
+      .replace(/\\/g, '/')
+
+    if (posixSortPathWithExt.startsWith('.')) return posixSortPathWithExt
+    return './' + posixSortPathWithExt
+  }
+
+  const updatedData = utils.getUpdatedData(
+    data,
+    foundImportPaths,
+    (node: NodeType) => {
+      if (node.value.startsWith('.')) {
+        return updateRelativeImports(node)
       }
 
-      function updateResolvedPath(baseUrl: string, resolvedPath: string) {
-        const relativeToCurrentOutDir = path.join(
-          currentOutDir,
-          path.relative(baseUrl, resolvedPath)
-        )
-
-        const shortPath = path.relative(
-          path.dirname(filePath),
-          relativeToCurrentOutDir
-        )
-
-        const shortestPathWithExt =
-          path.dirname(shortPath) + '/' + path.parse(shortPath).name + ext
-
-        const posixSortPathWithExt = path
-          .normalize(shortestPathWithExt)
-          .replace(/\\/g, '/')
-
-        if (posixSortPathWithExt.startsWith('.')) return posixSortPathWithExt
-        return './' + posixSortPathWithExt
-      }
-
-      const updatedData = utils.getUpdatedData(
-        data,
-        foundImportPaths,
-        (node: NodeType) => {
-          if (node.value.startsWith('.')) {
-            return updateRelativeImports(node)
-          }
-
-          if (!tsconfigBaseUrl || !tsconfigPaths) return
-          const resolvedPath = resolveImportPath(
-            tsconfigBaseUrl,
-            node.value,
-            tsconfigPaths
-          )
-
-          return (
-            resolvedPath && updateResolvedPath(tsconfigBaseUrl, resolvedPath)
-          )
-        }
+      if (!tsconfigBaseUrl || !tsconfigPaths) return
+      const resolvedPath = resolveImportPath(
+        tsconfigBaseUrl,
+        node.value,
+        tsconfigPaths
       )
 
-      const newFilePath = utils.getNewFilePath(filePath, moduleType)
-      return [newFilePath, updatedData] as const
-    })
+      return resolvedPath && updateResolvedPath(tsconfigBaseUrl, resolvedPath)
+    }
   )
+
+  const newFilePath = utils.getNewFilePath(filePath, moduleType)
+  return [newFilePath, updatedData] as const
 }

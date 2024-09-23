@@ -32,11 +32,8 @@ export const parseString = (str: any): NodeType => ({
   filename: str.loc.filename,
 })
 
-export const isFileExists = (files: string[], target: string) => {
+export const isFileExists = (  target: string) => {
   return (
-    files.includes(target) ||
-    files.includes(target + '.js') ||
-    files.includes(target + '.ts') ||
     (fs.existsSync(target) && fs.statSync(target).isFile()) ||
     (fs.existsSync(target + '.js') && fs.statSync(target + '.js').isFile()) ||
     (fs.existsSync(target + '.ts') && fs.statSync(target + '.ts').isFile())

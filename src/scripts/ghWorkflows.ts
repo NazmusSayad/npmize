@@ -1,7 +1,7 @@
-import fs from 'fs'
 import path from 'path'
 import ansiColors from 'ansi-colors'
-import { confirmDir, getNodeVersion } from '../utils'
+import { getNodeVersion } from '../utils'
+import { writeFileSync } from '../utils/fs'
 
 function publishWorkflowTemplate(nodeVersion = 'latest') {
   return `name: Publish to NPM
@@ -45,10 +45,10 @@ jobs:
 }
 
 export default function (baseDir: string) {
-  const workflowDir = confirmDir(baseDir, './.github/workflows')
+  const workflowDir = path.join(baseDir, './.github/workflows')
   const publishWorkflowPath = path.join(workflowDir, 'npm-publish.yml')
 
-  fs.writeFileSync(
+  writeFileSync(
     publishWorkflowPath,
     publishWorkflowTemplate(getNodeVersion()?.toString())
   )

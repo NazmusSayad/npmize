@@ -5,7 +5,7 @@ import ansiColors from 'ansi-colors'
 import { updateTSConfig } from '../scripts/tsconfig'
 import ghWorkflows from '../scripts/ghWorkflows'
 import packageJSON from '../scripts/packageJSON'
-import { writeFileSync } from '../utils'
+import { writeFileSync } from '../utils/fs'
 import config from '../config'
 
 export default function (basePath: string, options: InitOptions) {
@@ -54,9 +54,7 @@ export default function (basePath: string, options: InitOptions) {
           declaration: true,
           strict: true,
 
-          paths: {
-            '@/*': ['./*'],
-          },
+          paths: { '@/*': ['./*'] },
         },
 
         include: ['./src'],
@@ -93,7 +91,6 @@ export default function (basePath: string, options: InitOptions) {
         "'./src/index.ts' folder already exists"
       )
     } else {
-      fs.mkdirSync(srcPath)
       writeFileSync(
         path.join(srcPath, './index.ts'),
         `console.log('Hello, world!')\nexport default 'Hello, world!'`

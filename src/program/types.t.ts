@@ -4,5 +4,5 @@ export type CompileOptions = {
   tsc: string[]
   node: boolean
   module?: 'cjs' | 'mjs'
-  tsConfig: ReturnType<typeof readTSConfig>
+  tsConfig: ReturnType<typeof readTSConfig> & { outDir: string }
 }

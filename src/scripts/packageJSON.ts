@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { writeFileSync } from '../utils'
+import { writeFileSync } from '../utils/fs'
 
 function read(basePath: string): Record<string, any> {
   try {

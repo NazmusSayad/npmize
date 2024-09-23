@@ -79,11 +79,19 @@ const devAndBuild = NoArg.defineConfig({
 })
 
 export const dev = app.create('dev', {
-  description: 'Start a development',
   ...devAndBuild,
+  description: 'Start a development',
+  flags: {
+    ...devAndBuild.flags,
+    focus: NoArg.string('cjs', 'mjs')
+      .default('mjs')
+      .description(
+        'Focus the typescript compilation process of a specific module'
+      ),
+  },
 })
 
 export const build = app.create('build', {
-  description: 'Build the package for production',
   ...devAndBuild,
+  description: 'Build the package for production',
 })
