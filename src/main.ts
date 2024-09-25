@@ -13,11 +13,11 @@ app.app.on((_, flags) => {
   } else app.app.renderHelp()
 })
 
-app.init.on(([nameArg = '.'], flags) => {
-  const root = path.resolve(nameArg)
+app.init.on(([name = '.'], flags) => {
+  const root = path.resolve(name)
 
   init(root, {
-    writeSample: flags.demo,
+    writeSample: flags.sample,
     writePackageJSON: flags.pkg,
     installPackages: flags.install,
     writeGitIgnore: flags.ignore && flags.gitignore,
@@ -27,8 +27,8 @@ app.init.on(([nameArg = '.'], flags) => {
   })
 })
 
-app.dev.on(([rootArg = '.', railingArgs], options) => {
-  const rootPath = path.resolve(rootArg)
+app.dev.on(([root = '.', railingArgs], options) => {
+  const rootPath = path.resolve(root)
   const tsConfig = readTSConfig(rootPath)
 
   if (!tsConfig) {
@@ -52,8 +52,8 @@ app.dev.on(([rootArg = '.', railingArgs], options) => {
   })
 })
 
-app.build.on(([rootArg = '.', railingArgs], options) => {
-  const rootPath = path.resolve(rootArg)
+app.build.on(([root = '.', railingArgs], options) => {
+  const rootPath = path.resolve(root)
   const tsConfig = readTSConfig(rootPath)
 
   if (!tsConfig) {

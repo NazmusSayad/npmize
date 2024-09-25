@@ -20,29 +20,33 @@ export const init = app.create('init', {
   arguments: [
     {
       name: 'name',
-      type: NoArg.string()
-        .description('Name of the package')
-        .ask("What's the name of the package?")
-        .default('.'),
+      description: 'Name of the package',
+      type: NoArg.string().default('.').ask("What's the name of the package?"),
     },
   ],
 
   flags: {
-    pkg: NoArg.boolean().default(true).description("Write 'package.json'"),
-    install: NoArg.boolean().default(true).description('Install TypeScript'),
+    pkg: NoArg.boolean()
+      .default(true)
+      .description('Make package.json with needed fields'),
     tsconfig: NoArg.boolean()
       .default(true)
       .description('Write "tsconfig.json"'),
-    demo: NoArg.boolean().default(true).description('Write a sample file'),
     workflow: NoArg.boolean()
       .default(true)
       .description('Write a workflow file'),
-
+    install: NoArg.boolean()
+      .default(true)
+      .description('Install needed npm packages'),
+    sample: NoArg.boolean()
+      .default(true)
+      .description('Write a sample file ./src/index.ts'),
     ignore: NoArg.boolean()
       .default(true)
       .description("Write '.gitignore' and '.npmignore'"),
-    npmignore: NoArg.boolean().default(true).description("Write '.npmignore'"),
-    gitignore: NoArg.boolean().default(true).description("Write '.gitignore'"),
+
+    npmignore: NoArg.boolean().default(true).description('Write .npmignore'),
+    gitignore: NoArg.boolean().default(true).description('Write .gitignore'),
   },
 })
 
@@ -50,6 +54,7 @@ const devAndBuild = NoArg.defineConfig({
   optionalArguments: [
     {
       name: 'root',
+      description: 'Root directory of the package',
       type: NoArg.string().description('Root directory'),
     },
   ],
@@ -57,15 +62,13 @@ const devAndBuild = NoArg.defineConfig({
   flags: {
     module: NoArg.string('cjs', 'mjs')
       .aliases('m')
-      .description("Output module's type"),
+      .description('Output module type .cjs or .mjs'),
 
     node: NoArg.boolean()
       .aliases('n')
       .default(false)
       .description('Enable __dirname and __filename in ES modules'),
   },
-
-  trailingArguments: '--tsc',
 
   notes: [
     `Arguments after "${ansiColors.yellow(
@@ -76,14 +79,18 @@ const devAndBuild = NoArg.defineConfig({
       .map((flag) => ansiColors.yellow(flag))
       .join(', ') + ' and their aliases are ignored.',
   ],
+
+  trailingArguments: '--tsc',
+  customRenderHelp: { helpUsageTrailingArgsLabel: '[TypeScript Args]' },
 })
 
 export const dev = app.create('dev', {
   ...devAndBuild,
-  description: 'Start a development',
+  description: 'Start the development compiler',
   flags: {
     ...devAndBuild.flags,
     focus: NoArg.string('cjs', 'mjs')
+      .aliases('f')
       .default('mjs')
       .description(
         'Focus the typescript compilation process of a specific module'

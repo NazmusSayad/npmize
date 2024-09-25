@@ -5,7 +5,7 @@ import packageJSON from '../scripts/packageJSON'
 import config from '../config'
 
 export function getVersion() {
-  return packageJSON.read(path.join(__dirname, '../')).version
+  return 'v' + packageJSON.read(path.join(__dirname, '../../')).version
 }
 
 export function getNodeModulesTempDir(baseDir: string, suffix: string) {
