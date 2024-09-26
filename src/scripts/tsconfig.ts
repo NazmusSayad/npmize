@@ -110,10 +110,7 @@ export function resolveImportPath(
     importPath,
     baseUrl,
     { baseUrl, paths },
-    moduleResolutionHost,
-    undefined,
-    undefined,
-    ModuleKind.CommonJS
+    moduleResolutionHost
   )
 
   if (resolved.resolvedModule?.packageId) return
