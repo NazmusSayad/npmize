@@ -29,8 +29,9 @@ export default function (filePath: string, options: MakeOutputOptions) {
   )
 
   const contentWithNodeCode =
-    (true ? pushNodeCode(newFilePath, newFileContent) : newFileContent) +
-    newFileContent
+    options.pushNodeCode && options.moduleType === 'cjs'
+      ? pushNodeCode(newFilePath, newFileContent) + newFileContent
+      : newFileContent
 
   autoCreateDir(path.dirname(newFilePath))
   fs.writeFileSync(newFilePath, contentWithNodeCode)

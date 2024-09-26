@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import ts from 'typescript'
+import ts, { ModuleKind } from 'typescript'
 
 export function findTSConfigPath(targetPath: string) {
   return ts.findConfigFile(targetPath, ts.sys.fileExists, 'tsconfig.json')
@@ -110,8 +110,12 @@ export function resolveImportPath(
     importPath,
     baseUrl,
     { baseUrl, paths },
-    moduleResolutionHost
+    moduleResolutionHost,
+    undefined,
+    undefined,
+    ModuleKind.CommonJS
   )
 
+  if (resolved.resolvedModule?.packageId) return
   return resolved.resolvedModule?.resolvedFileName
 }

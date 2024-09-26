@@ -8,7 +8,8 @@ export default function (
 ) {
   const runner = options.async ? crossSpawn : crossSpawn.sync
   runner('npx', ['tsc', ...args], {
-    stdio: options.stdio || 'inherit',
+    // stdio: options.stdio || 'inherit',
+    stdio: 'ignore',
     cwd,
   })
 }

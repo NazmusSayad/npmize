@@ -1,10 +1,10 @@
 import fs from 'fs'
 import path from 'path'
 import tsc from '../scripts/tsc'
+import { cleanDir } from '../utils/fs'
 import { CompileOptions } from './types.t'
 import makeOutput from '../scripts/makeOutputFile'
 import { getNodeModulesTempDir } from '../utils'
-import { cleanDir } from '../utils/fs'
 
 export default function (
   rootPath: string,
