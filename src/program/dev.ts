@@ -29,24 +29,28 @@ function runDev(
   cleanDir(tempOutDir)
   cleanDir(finalOutDir)
 
-  fs.watch(tempOutDir, { recursive: true }, (event, filename) => {
-    if (event !== 'change' || !filename) return
-    if (!(filename.endsWith('.js') || filename.endsWith('.ts'))) return
+  fs.watch(
+    tempOutDir,
+    { recursive: true, persistent: true },
+    (event, filename) => {
+      if (event !== 'change' || !filename) return
+      if (!(filename.endsWith('.js') || filename.endsWith('.ts'))) return
 
-    const filePath = path.join(tempOutDir, filename)
-    if (!(fs.existsSync(filePath) && fs.statSync(filePath).isFile())) return
+      const filePath = path.join(tempOutDir, filename)
+      if (!(fs.existsSync(filePath) && fs.statSync(filePath).isFile())) return
 
-    makeOutput(filePath, {
-      tempOutDir: tempOutDir,
-      finalOutDir: finalOutDir,
-      moduleType: moduleType,
-      pushNodeCode: options.node,
-      tsConfig: {
-        baseUrl: options.tsConfig?.baseUrl,
-        paths: options.tsConfig?.paths,
-      },
-    })
-  })
+      makeOutput(filePath, {
+        tempOutDir: tempOutDir,
+        finalOutDir: finalOutDir,
+        moduleType: moduleType,
+        pushNodeCode: options.node,
+        tsConfig: {
+          baseUrl: options.tsConfig?.baseUrl,
+          paths: options.tsConfig?.paths,
+        },
+      })
+    }
+  )
 
   tsc(
     rootPath,
