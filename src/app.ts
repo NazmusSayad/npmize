@@ -101,4 +101,11 @@ export const dev = app.create('dev', {
 export const build = app.create('build', {
   ...devAndBuild,
   description: 'Build the package for production',
+  flags: {
+    ...devAndBuild.flags,
+    worker: NoArg.boolean()
+      .aliases('w')
+      .default(false)
+      .description('Run the build process in a worker thread'),
+  },
 })

@@ -7,10 +7,7 @@ import { CompileOptions } from './types.t'
 import makeOutput from '../scripts/makeOutputFile'
 import { getNodeModulesTempDir } from '../utils'
 
-export default function (
-  rootPath: string,
-  options: CompileOptions & { focus: 'cjs' | 'mjs' }
-) {
+export default function (rootPath: string, options: DevOptions) {
   if (options.module) {
     return runDev(rootPath, options.tsConfig.outDir, options.module, options)
   }
@@ -22,8 +19,8 @@ export default function (
 function runDev(
   rootPath: string,
   shortOutDir: string,
-  moduleType: Exclude<CompileOptions['module'], undefined>,
-  options: Omit<CompileOptions, 'module' | 'outDir'> & { focus: 'cjs' | 'mjs' }
+  moduleType: Exclude<DevOptions['module'], undefined>,
+  options: Omit<DevOptions, 'module' | 'outDir'>
 ) {
   const tempOutDir = getNodeModulesTempDir(rootPath, 'dev-' + moduleType)
   const finalOutDir = path.resolve(shortOutDir)
@@ -31,7 +28,8 @@ function runDev(
   cleanDir(tempOutDir)
   cleanDir(finalOutDir)
   function updateFile(filePath: string) {
-    makeOutput(filePath, {
+    return makeOutput(filePath, {
+      useWorker: false,
       tempOutDir: tempOutDir,
       finalOutDir: finalOutDir,
       moduleType: moduleType,
@@ -64,4 +62,8 @@ function runDev(
     if (!fs.statSync(filePath).isFile()) return
     updateFile(filePath)
   })
+}
+
+export type DevOptions = CompileOptions & {
+  focus: 'cjs' | 'mjs'
 }

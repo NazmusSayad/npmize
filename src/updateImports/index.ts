@@ -1,51 +1,37 @@
-import fs from 'fs'
 import path from 'path'
-import * as node from './node'
 import * as utils from './utils'
 import { NodeType } from './types.t'
 import * as babel from '@babel/parser'
+import { Worker } from 'worker_threads'
 import { Statement } from '@babel/types'
+import { getImports, getRequires } from './node'
 import { resolveImportPath } from '../scripts/tsconfig'
 
-const getImports = (parsed: Statement[]) => {
-  return [
-    ...node.CallExpressionImport(parsed),
-    ...node.TSImportType(parsed),
-    ...node.ImportDeclaration_ExportNamedDeclaration_ExportAllDeclaration(
-      parsed
-    ),
-  ]
-}
-
-const getRequires = (parsed: Statement[]) => {
-  return node.CallExpressionRequire(parsed)
-}
-
-export default (
+export default async function (
   cwd: string,
   filePath: string,
+  compiledText: string,
   moduleType: 'cjs' | 'mjs',
   tsconfigBaseUrl: string | undefined,
   tsconfigPaths: Record<string, string[]> | undefined
-) => {
+) {
   const ext = '.' + moduleType
-  const dirPath = path.dirname(filePath)
-  const data = fs.readFileSync(filePath, 'utf-8')
+  const fileDirPath = path.dirname(filePath)
 
-  const parsedBody = babel.parse(data, {
+  const parsedBody = babel.parse(compiledText, {
     sourceType: 'module',
     plugins: ['typescript'],
     sourceFilename: filePath,
   }).program.body
 
-  const foundImportPaths =
-    filePath.endsWith('.ts') || moduleType === 'mjs'
-      ? getImports(parsedBody)
-      : getRequires(parsedBody)
+  const isModuleJs = filePath.endsWith('.ts') || moduleType === 'mjs'
+  const foundImportPaths = isModuleJs
+    ? getImports(parsedBody)
+    : getRequires(parsedBody)
 
   function updateRelativeImports(node: NodeType) {
     const shortPath = node.value.replace(/\.js$/i, '')
-    const fullPath = path.join(dirPath, node.value)
+    const fullPath = path.join(fileDirPath, node.value)
 
     const isExists = utils.isFileExists(fullPath)
     return isExists ? shortPath + ext : shortPath + '/index' + ext
@@ -74,7 +60,7 @@ export default (
   }
 
   const updatedData = utils.getUpdatedData(
-    data,
+    compiledText,
     foundImportPaths,
     (node: NodeType) => {
       if (node.value.startsWith('.')) {
@@ -94,4 +80,14 @@ export default (
 
   const newFilePath = utils.getNewFilePath(filePath, moduleType)
   return [newFilePath, updatedData] as const
+}
+
+function getRequiredStatements(type: 'import' | 'require', body: Statement[]) {
+  return new Promise<NodeType[]>((resolve) => {
+    const worker = new Worker(path.join(__dirname, './nodeWorker.js'))
+    worker.postMessage({ type, body })
+    worker.on('message', (message) => {
+      resolve(message)
+    })
+  })
 }

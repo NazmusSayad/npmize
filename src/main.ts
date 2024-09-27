@@ -72,7 +72,7 @@ app.build.on(([root = '.', railingArgs], options) => {
 
   build(rootPath, {
     ...options,
-    tsc: railingArgs,
+     tsc: railingArgs,
     tsConfig: { ...tsConfig, outDir: tsConfig.outDir },
   })
 })

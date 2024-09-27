@@ -9,6 +9,7 @@ This package simplifies creating npm packages that work seamlessly across browse
 - **Universal Compatibility:** Works across browsers and Node.js.
 - **ESM and CJS Compilation:** Compiles code to both CJS and ESM formats.
 - **Simple and Lightweight:** Easy to use and maintains a small footprint.
+- **Multiple Threads** Can utilize multiple threads for extremely large projects.
 - **Path Conversion:** Converts TypeScript config paths to relative paths for compatibility.
 - **ESM `__dirname` and `__filename` Support:** Enables these variables for ESM compatibility.
 

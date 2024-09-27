@@ -4,8 +4,9 @@ import { CompileOptions } from './types.t'
 import makeOutput from '../scripts/makeOutputFile'
 import { getNodeModulesTempDir } from '../utils'
 import { cleanDir, getAllFiles } from '../utils/fs'
+import ansiColors from 'ansi-colors'
 
-export default function (rootPath: string, options: CompileOptions) {
+export default async function (rootPath: string, options: BuildOptions) {
   console.log(`Build started at ${rootPath}`)
   console.log('')
 
@@ -15,18 +16,19 @@ export default function (rootPath: string, options: CompileOptions) {
     return runBuild(rootPath, options.tsConfig.outDir, options.module, options)
   }
 
-  runBuild(rootPath, options.tsConfig.outDir, 'cjs', options)
-  runBuild(rootPath, options.tsConfig.outDir, 'mjs', options)
+  await runBuild(rootPath, options.tsConfig.outDir, 'cjs', options)
+  await runBuild(rootPath, options.tsConfig.outDir, 'mjs', options)
 }
 
-function runBuild(
+async function runBuild(
   rootPath: string,
   fullOutDir: string,
-  moduleType: Exclude<CompileOptions['module'], undefined>,
-  options: Omit<CompileOptions, 'module' | 'outDir'>
+  moduleType: Exclude<BuildOptions['module'], undefined>,
+  options: Omit<BuildOptions, 'module' | 'outDir'>
 ) {
   console.log(`Building ${moduleType}...`)
 
+  console.time('Build time')
   const tempOutDir = getNodeModulesTempDir(rootPath, 'build-' + moduleType)
   cleanDir(tempOutDir)
 
@@ -38,11 +40,12 @@ function runBuild(
     moduleType === 'cjs' ? 'commonjs' : 'esnext',
   ])
 
-  const newFiles = getAllFiles(tempOutDir).map((file) => {
+  const promisesOfFiles = getAllFiles(tempOutDir).map((file) => {
     return makeOutput(file, {
       tempOutDir: tempOutDir,
       finalOutDir: fullOutDir,
       moduleType: moduleType,
+      useWorker: options.worker,
       pushNodeCode: options.node,
       tsConfig: {
         paths: options.tsConfig?.paths,
@@ -50,6 +53,9 @@ function runBuild(
       },
     })
   })
+
+  const newFiles = await Promise.all(promisesOfFiles)
+  console.timeEnd('Build time')
 
   const fileSizes = newFiles
     .filter((a) => a.endsWith('js'))
@@ -63,11 +69,17 @@ function runBuild(
 
   const totalSize = fileSizes.reduce((acc, { size }) => acc + size, 0)
   console.log(
-    `Built ${fileSizes.length} JavaScript files with a total size of ${(
-      totalSize / 1024
-    ).toFixed(2)}KB`
+    `Built ${ansiColors.yellow(
+      String(fileSizes.length)
+    )} JavaScript files with a total size of ${ansiColors.yellow(
+      (totalSize / 1024).toFixed(2)
+    )} KB`
   )
 
   cleanDir(tempOutDir, false)
   console.log('')
+}
+
+export type BuildOptions = CompileOptions & {
+  worker: boolean
 }

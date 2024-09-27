@@ -1,10 +1,11 @@
 import fs from 'fs'
 import path from 'path'
-import pushNodeCode from './getNodeCode'
-import updateImports from '../updateImports'
+import { Worker } from 'worker_threads'
 import { autoCreateDir } from '../utils/fs'
+import generateOutput from './generateOutput'
 
-type MakeOutputOptions = {
+export type MakeOutputOptions = {
+  useWorker: boolean
   tempOutDir: string
   finalOutDir: string
   moduleType: 'cjs' | 'mjs'
@@ -14,27 +15,38 @@ type MakeOutputOptions = {
     paths?: Record<string, string[]>
   }
 }
-export default function (filePath: string, options: MakeOutputOptions) {
-  const [tempFilePath, newFileContent] = updateImports(
-    options.tempOutDir,
+
+export default async function (filePath: string, options: MakeOutputOptions) {
+  const fileContent = fs.readFileSync(filePath, 'utf-8')
+  const generator = options.useWorker ? generateOutputWorker : generateOutput
+  const [newFilePath, newFileContent] = await generator(
     filePath,
-    options.moduleType,
-    options.tsConfig?.baseUrl,
-    options.tsConfig?.paths
+    fileContent,
+    options
   )
-
-  const newFilePath = path.join(
-    options.finalOutDir,
-    path.relative(options.tempOutDir, tempFilePath)
-  )
-
-  const contentWithNodeCode =
-    options.pushNodeCode && options.moduleType === 'cjs'
-      ? pushNodeCode(newFilePath, newFileContent) + newFileContent
-      : newFileContent
 
   autoCreateDir(path.dirname(newFilePath))
-  fs.writeFileSync(newFilePath, contentWithNodeCode)
+  fs.writeFileSync(newFilePath, newFileContent)
 
   return newFilePath
+}
+
+function generateOutputWorker(
+  filePath: string,
+  fileContent: string,
+  options: MakeOutputOptions
+): ReturnType<typeof generateOutput> {
+  const worker = new Worker(path.join(__dirname, 'generateOutputWorker.js'))
+  worker.postMessage({
+    filePath,
+    fileContent,
+    options,
+  })
+
+  return new Promise((resolve) => {
+    worker.on('message', (message) => {
+      resolve(message)
+      worker.terminate()
+    })
+  })
 }
