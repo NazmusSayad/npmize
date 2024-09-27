@@ -1,9 +1,8 @@
 import path from 'path'
-import { NodeType } from './types.t'
 import * as babel from '@babel/parser'
-import { getImports, getRequires } from './node'
 import { resolveImportPath } from '../scripts/tsconfig'
-import { getUpdatedData, resolveJsFilePath } from './helpers'
+import { getImports, getRequires } from './getStatements'
+import { getUpdatedData, NodeType, resolveJsFilePath } from './helpers'
 
 export default async function (
   cwd: string,

@@ -35,3 +35,7 @@ export function getAllFiles(dir: string): string[] {
 
   return getTarget(dir)
 }
+
+export function getExistedFilePath(target: string) {
+  if (fs.existsSync(target) && fs.statSync(target).isFile()) return target
+}

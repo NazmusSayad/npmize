@@ -1,5 +1,4 @@
-import * as fs from 'fs'
-import { NodeType } from './types.t'
+import { getExistedFilePath } from '../utils/fs'
 
 export function getUpdatedData(fileData: any, found: NodeType[], cb: any) {
   const newEntries: NodeType[] = [
@@ -21,9 +20,15 @@ export function getUpdatedData(fileData: any, found: NodeType[], cb: any) {
 }
 
 export function resolveJsFilePath(target: string) {
-  function isExists(target: string) {
-    if (fs.existsSync(target) && fs.statSync(target).isFile()) return target
-  }
+  return (
+    getExistedFilePath(target) ??
+    getExistedFilePath(target + '.js') ??
+    getExistedFilePath(target + '/index.js')
+  )
+}
 
-  return isExists(target) || isExists(target + '.js') || isExists(target + '/index.js')
+export type NodeType = {
+  start: number
+  end: number
+  value: string
 }

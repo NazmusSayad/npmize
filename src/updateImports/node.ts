@@ -1,4 +1,4 @@
-import { NodeType } from './types.t'
+import { NodeType } from './helpers'
 import { Statement } from '@babel/types'
 
 function parseString(str: any): NodeType {
@@ -9,8 +9,8 @@ function parseString(str: any): NodeType {
   }
 }
 
-const isOkString = (node: any) => {
-  return node && node.type === 'StringLiteral'
+function isOkString(node: any) {
+  return Boolean(node && node.type === 'StringLiteral')
 }
 
 function findNestedItems(entireObj: Statement[], valToFind: unknown) {
@@ -23,13 +23,13 @@ function findNestedItems(entireObj: Statement[], valToFind: unknown) {
   return foundObj
 }
 
-function TSImportType(parsed: Statement[]) {
+export function TSImportType(parsed: Statement[]) {
   return findNestedItems(parsed, 'TSImportType')
     .filter((node) => isOkString(node.argument))
     .map((node) => parseString(node.argument))
 }
 
-function ImportDeclaration_ExportNamedDeclaration_ExportAllDeclaration(parsed: Statement[]) {
+export function ImportDeclaration_ExportNamedDeclaration_ExportAllDeclaration(parsed: Statement[]) {
   return [
     findNestedItems(parsed, 'ImportDeclaration'),
     findNestedItems(parsed, 'ExportDeclaration'),
@@ -41,7 +41,7 @@ function ImportDeclaration_ExportNamedDeclaration_ExportAllDeclaration(parsed: S
     .map((node) => parseString(node.source))
 }
 
-function CallExpressionImport(parsed: Statement[]) {
+export function CallExpressionImport(parsed: Statement[]) {
   return findNestedItems(parsed, 'CallExpression')
     .filter(
       (node) =>
@@ -50,7 +50,7 @@ function CallExpressionImport(parsed: Statement[]) {
     .map((node) => parseString(node.arguments[0]))
 }
 
-function CallExpressionRequire(parsed: Statement[]) {
+export function CallExpressionRequire(parsed: Statement[]) {
   return findNestedItems(parsed, 'CallExpression')
     .filter(
       (node) =>
@@ -61,16 +61,4 @@ function CallExpressionRequire(parsed: Statement[]) {
         isOkString(node.arguments[0])
     )
     .map((node) => parseString(node.arguments[0]))
-}
-
-export function getImports(parsed: Statement[]) {
-  return [
-    ...TSImportType(parsed),
-    ...CallExpressionImport(parsed),
-    ...ImportDeclaration_ExportNamedDeclaration_ExportAllDeclaration(parsed),
-  ]
-}
-
-export function getRequires(parsed: Statement[]) {
-  return CallExpressionRequire(parsed)
 }
