@@ -1,10 +1,10 @@
 import fs from 'fs'
 import tsc from '../scripts/tsc'
+import ansiColors from 'ansi-colors'
 import { CompileOptions } from './types.t'
 import makeOutput from '../scripts/makeOutputFile'
 import { getNodeModulesTempDir } from '../utils'
 import { cleanDir, getAllFiles } from '../utils/fs'
-import ansiColors from 'ansi-colors'
 
 export default async function (rootPath: string, options: BuildOptions) {
   console.log(`Build started at ${rootPath}`)
