@@ -1,5 +1,5 @@
 console.clear()
-const TEST_TARGET = '../uni-run'
+const TEST_TARGET = '../noarg'
 import { app } from '../app'
 import '../main'
 
