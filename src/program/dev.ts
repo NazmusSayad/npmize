@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import chokidar from 'chokidar'
 import tsc from '../scripts/tsc'
 import { cleanDir } from '../utils/fs'
 import { CompileOptions } from './types.t'
@@ -26,31 +27,21 @@ function runDev(
 ) {
   const tempOutDir = getNodeModulesTempDir(rootPath, 'dev-' + moduleType)
   const finalOutDir = path.resolve(shortOutDir)
+
   cleanDir(tempOutDir)
   cleanDir(finalOutDir)
-
-  fs.watch(
-    tempOutDir,
-    { recursive: true, persistent: true },
-    (event, filename) => {
-      if (event !== 'change' || !filename) return
-      if (!(filename.endsWith('.js') || filename.endsWith('.ts'))) return
-
-      const filePath = path.join(tempOutDir, filename)
-      if (!(fs.existsSync(filePath) && fs.statSync(filePath).isFile())) return
-
-      makeOutput(filePath, {
-        tempOutDir: tempOutDir,
-        finalOutDir: finalOutDir,
-        moduleType: moduleType,
-        pushNodeCode: options.node,
-        tsConfig: {
-          baseUrl: options.tsConfig?.baseUrl,
-          paths: options.tsConfig?.paths,
-        },
-      })
-    }
-  )
+  function updateFile(filePath: string) {
+    makeOutput(filePath, {
+      tempOutDir: tempOutDir,
+      finalOutDir: finalOutDir,
+      moduleType: moduleType,
+      pushNodeCode: options.node,
+      tsConfig: {
+        baseUrl: options.tsConfig?.baseUrl,
+        paths: options.tsConfig?.paths,
+      },
+    })
+  }
 
   tsc(
     rootPath,
@@ -67,4 +58,10 @@ function runDev(
       stdio: moduleType === options.focus ? 'inherit' : 'ignore',
     }
   )
+
+  chokidar.watch(tempOutDir).on('all', (_, filePath) => {
+    if (!fs.existsSync(filePath)) return
+    if (!fs.statSync(filePath).isFile()) return
+    updateFile(filePath)
+  })
 }
