@@ -12,9 +12,7 @@ export function readTSConfig(targetPath: string) {
 
   const configJsonString = ts.readConfigFile(configFilePath, ts.sys.readFile)
   if (configJsonString.error) {
-    throw new Error(
-      ts.formatDiagnostic(configJsonString.error, ts.createCompilerHost({}))
-    )
+    throw new Error(ts.formatDiagnostic(configJsonString.error, ts.createCompilerHost({})))
   }
 
   const configObj = ts.parseJsonConfigFileContent(
@@ -44,15 +42,10 @@ export function updateTSConfig(
   }
 
   const configFileContent = fs.readFileSync(configFilePath, 'utf-8')
-  const configObj = ts.parseConfigFileTextToJson(
-    configFilePath,
-    configFileContent
-  )
+  const configObj = ts.parseConfigFileTextToJson(configFilePath, configFileContent)
 
   if (configObj.error) {
-    throw new Error(
-      ts.formatDiagnostic(configObj.error, ts.createCompilerHost({}))
-    )
+    throw new Error(ts.formatDiagnostic(configObj.error, ts.createCompilerHost({})))
   }
 
   const updatedConfig = {
@@ -63,10 +56,7 @@ export function updateTSConfig(
       ...newConfig.compilerOptions,
     },
 
-    include: [
-      ...(configObj.config.include ?? []),
-      ...(newConfig.include ?? []),
-    ],
+    include: [...(configObj.config.include ?? []), ...(newConfig.include ?? [])],
   }
 
   if (updatedConfig.include?.length) {

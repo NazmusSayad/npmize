@@ -1,6 +1,6 @@
 {
   "name": "npmize",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "Let's create an npm package without worrying about anything.",
   "bin": "./dist/index.js",
   "scripts": {
@@ -8,7 +8,8 @@
     "build": "node ./build.cjs",
     "tsc": "tsc --noEmit --watch",
     "lab": "run ./src/__lab__/index.ts",
-    "lab-js": "node --watch --watch ./dist/__lab__/index.js"
+    "lab-js": "node --watch --watch ./dist/__lab__/index.js",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@babel/parser": "^7.25.6",
@@ -20,7 +21,8 @@
   },
   "devDependencies": {
     "@types/cross-spawn": "^6.0.6",
-    "@types/node": "^22.5.5"
+    "@types/node": "^22.5.5",
+    "prettier": "^3.3.3"
   },
   "keywords": [
     "npm",

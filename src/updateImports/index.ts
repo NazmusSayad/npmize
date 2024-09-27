@@ -21,9 +21,7 @@ export default async function (
     sourceFilename: filePath,
   }).program.body
 
-  const foundImportPaths = isModuleJs
-    ? getImports(parsedBody)
-    : getRequires(parsedBody)
+  const foundImportPaths = isModuleJs ? getImports(parsedBody) : getRequires(parsedBody)
 
   function updateRelativeImports(node: NodeType) {
     const fileDir = path.dirname(filePath)
@@ -36,22 +34,13 @@ export default async function (
   }
 
   function updateResolvedPath(baseUrl: string, resolvedPath: string) {
-    const relativeToCurrentOutDir = path.join(
-      cwd,
-      path.relative(baseUrl, resolvedPath)
-    )
+    const relativeToCurrentOutDir = path.join(cwd, path.relative(baseUrl, resolvedPath))
 
-    const shortPath = path.relative(
-      path.dirname(filePath),
-      relativeToCurrentOutDir
-    )
+    const shortPath = path.relative(path.dirname(filePath), relativeToCurrentOutDir)
 
-    const shortestPathWithExt =
-      path.dirname(shortPath) + '/' + path.parse(shortPath).name + newExt
+    const shortestPathWithExt = path.dirname(shortPath) + '/' + path.parse(shortPath).name + newExt
 
-    const posixSortPathWithExt = path
-      .normalize(shortestPathWithExt)
-      .replace(/\\/g, '/')
+    const posixSortPathWithExt = path.normalize(shortestPathWithExt).replace(/\\/g, '/')
 
     if (posixSortPathWithExt.startsWith('.')) return posixSortPathWithExt
     return './' + posixSortPathWithExt
@@ -63,11 +52,7 @@ export default async function (
     }
 
     if (!tsconfigBaseUrl || !tsconfigPaths) return
-    const resolvedPath = resolveImportPath(
-      tsconfigBaseUrl,
-      node.value,
-      tsconfigPaths
-    )
+    const resolvedPath = resolveImportPath(tsconfigBaseUrl, node.value, tsconfigPaths)
 
     return resolvedPath && updateResolvedPath(tsconfigBaseUrl, resolvedPath)
   })

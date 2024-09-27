@@ -6,7 +6,6 @@ function parseString(str: any): NodeType {
     start: str.start,
     end: str.end,
     value: str.value,
-    filename: str.loc.filename,
   }
 }
 
@@ -30,9 +29,7 @@ function TSImportType(parsed: Statement[]) {
     .map((node) => parseString(node.argument))
 }
 
-function ImportDeclaration_ExportNamedDeclaration_ExportAllDeclaration(
-  parsed: Statement[]
-) {
+function ImportDeclaration_ExportNamedDeclaration_ExportAllDeclaration(parsed: Statement[]) {
   return [
     findNestedItems(parsed, 'ImportDeclaration'),
     findNestedItems(parsed, 'ExportDeclaration'),
@@ -48,10 +45,7 @@ function CallExpressionImport(parsed: Statement[]) {
   return findNestedItems(parsed, 'CallExpression')
     .filter(
       (node) =>
-        node &&
-        node.callee &&
-        node.callee.type === 'Import' &&
-        isOkString(node.arguments[0])
+        node && node.callee && node.callee.type === 'Import' && isOkString(node.arguments[0])
     )
     .map((node) => parseString(node.arguments[0]))
 }

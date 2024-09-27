@@ -15,9 +15,7 @@ export default function (fileContent: string) {
   }
 
   if (isDirnameExist) {
-    nodeCodeContents.push(
-      `var __dirname=${varName}(new URL('.',import.meta.url));`
-    )
+    nodeCodeContents.push(`var __dirname=${varName}(new URL('.',import.meta.url));`)
   }
 
   return nodeCodeContents.join('\n') + '\n/* END: AUTO-GENERATED CODE */\n\n'

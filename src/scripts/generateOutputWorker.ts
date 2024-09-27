@@ -3,11 +3,9 @@ import generateOutput from './generateOutput'
 import { MakeOutputOptions } from './makeOutputFile'
 
 parentPort!.on('message', (options: WorkerMessage) => {
-  generateOutput(options.filePath, options.fileContent, options.options).then(
-    (data) => {
-      parentPort!.postMessage(data)
-    }
-  )
+  generateOutput(options.filePath, options.fileContent, options.options).then((data) => {
+    parentPort!.postMessage(data)
+  })
 })
 
 export type WorkerMessage = {

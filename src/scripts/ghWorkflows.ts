@@ -48,10 +48,7 @@ export default function (baseDir: string) {
   const workflowDir = path.join(baseDir, './.github/workflows')
   const publishWorkflowPath = path.join(workflowDir, 'npm-publish.yml')
 
-  writeFileSync(
-    publishWorkflowPath,
-    publishWorkflowTemplate(getNodeVersion()?.toString())
-  )
+  writeFileSync(publishWorkflowPath, publishWorkflowTemplate(getNodeVersion()?.toString()))
 
   console.log(
     ansiColors.bgGreen(' INFO: '),

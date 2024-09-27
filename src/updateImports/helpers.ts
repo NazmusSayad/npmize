@@ -3,7 +3,7 @@ import { NodeType } from './types.t'
 
 export function getUpdatedData(fileData: any, found: NodeType[], cb: any) {
   const newEntries: NodeType[] = [
-    { start: 0, end: 0, value: '', filename: '' },
+    { start: 0, end: 0, value: '' },
     ...found.sort((a, b) => a.start - b.start),
   ]
 
@@ -25,9 +25,5 @@ export function resolveJsFilePath(target: string) {
     if (fs.existsSync(target) && fs.statSync(target).isFile()) return target
   }
 
-  return (
-    isExists(target) ||
-    isExists(target + '.js') ||
-    isExists(target + '/index.js')
-  )
+  return isExists(target) || isExists(target + '.js') || isExists(target + '/index.js')
 }

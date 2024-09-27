@@ -30,9 +30,7 @@ export function getAllFiles(dir: string): string[] {
   const getTarget = (target: string): string[] => {
     if (fs.statSync(target).isFile()) return [target]
 
-    return fs
-      .readdirSync(target)
-      .flatMap((file) => getTarget(path.join(target, file)))
+    return fs.readdirSync(target).flatMap((file) => getTarget(path.join(target, file)))
   }
 
   return getTarget(dir)

@@ -32,10 +32,7 @@ app.dev.on(([root = '.', railingArgs], options) => {
   const tsConfig = readTSConfig(rootPath)
 
   if (!tsConfig) {
-    return console.log(
-      ansiColors.bgRed(' ERROR: '),
-      'Could not find "tsconfig.json"'
-    )
+    return console.log(ansiColors.bgRed(' ERROR: '), 'Could not find "tsconfig.json"')
   }
 
   if (!tsConfig?.outDir) {
@@ -57,10 +54,7 @@ app.build.on(([root = '.', railingArgs], options) => {
   const tsConfig = readTSConfig(rootPath)
 
   if (!tsConfig) {
-    return console.log(
-      ansiColors.bgRed(' ERROR: '),
-      'Could not find "tsconfig.json"'
-    )
+    return console.log(ansiColors.bgRed(' ERROR: '), 'Could not find "tsconfig.json"')
   }
 
   if (!tsConfig?.outDir) {
@@ -72,7 +66,7 @@ app.build.on(([root = '.', railingArgs], options) => {
 
   build(rootPath, {
     ...options,
-     tsc: railingArgs,
+    tsc: railingArgs,
     tsConfig: { ...tsConfig, outDir: tsConfig.outDir },
   })
 })

@@ -71,9 +71,7 @@ async function runBuild(
   console.log(
     `Built ${ansiColors.yellow(
       String(fileSizes.length)
-    )} JavaScript files with a total size of ${ansiColors.yellow(
-      (totalSize / 1024).toFixed(2)
-    )} KB`
+    )} JavaScript files with a total size of ${ansiColors.yellow((totalSize / 1024).toFixed(2))} KB`
   )
 
   cleanDir(tempOutDir, false)

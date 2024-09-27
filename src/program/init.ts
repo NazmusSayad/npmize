@@ -70,13 +70,7 @@ export default function (basePath: string, options: InitOptions) {
   }
 
   if (options.writeNpmIgnore) {
-    updateIgnoreFile('./.npmignore', [
-      '*',
-      '!lib/**',
-      '!dist/**',
-      '!README.md',
-      '!package.json',
-    ])
+    updateIgnoreFile('./.npmignore', ['*', '!lib/**', '!dist/**', '!README.md', '!package.json'])
   } else {
     console.log(ansiColors.bgGreen(' INFO: '), 'Npmignore is disabled')
   }
@@ -86,10 +80,7 @@ export default function (basePath: string, options: InitOptions) {
     const srcExists = fs.existsSync(srcPath)
 
     if (srcExists) {
-      console.log(
-        ansiColors.bgYellow(' WARN: '),
-        "'./src/index.ts' folder already exists"
-      )
+      console.log(ansiColors.bgYellow(' WARN: '), "'./src/index.ts' folder already exists")
     } else {
       writeFileSync(
         path.join(srcPath, './index.ts'),
