@@ -3,6 +3,7 @@ import path from 'path'
 import { Worker } from 'worker_threads'
 import { autoCreateDir } from '../utils/fs'
 import generateOutput from './generateOutput'
+import { getNewFilePath } from './utils'
 
 export type MakeOutputOptions = {
   useWorker: boolean
@@ -19,10 +20,12 @@ export type MakeOutputOptions = {
 export default async function (filePath: string, options: MakeOutputOptions) {
   const fileContent = fs.readFileSync(filePath, 'utf-8')
   const generator = options.useWorker ? generateOutputWorker : generateOutput
-  const [newFilePath, newFileContent] = await generator(
-    filePath,
-    fileContent,
-    options
+  const newFileContent = await generator(filePath, fileContent, options)
+
+  const relativeFilePath = path.relative(options.tempOutDir, filePath)
+  const newFilePath = getNewFilePath(
+    path.join(options.finalOutDir, relativeFilePath),
+    options.moduleType
   )
 
   autoCreateDir(path.dirname(newFilePath))

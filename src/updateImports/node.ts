@@ -1,28 +1,51 @@
+import { NodeType } from './types.t'
 import { Statement } from '@babel/types'
-import { findNestedItems, isOkString, parseString } from './utils'
 
-const TSImportType = (parsed: Statement[]) => {
-  return findNestedItems(parsed, 'type', 'TSImportType')
+function parseString(str: any): NodeType {
+  return {
+    start: str.start,
+    end: str.end,
+    value: str.value,
+    filename: str.loc.filename,
+  }
+}
+
+const isOkString = (node: any) => {
+  return node && node.type === 'StringLiteral'
+}
+
+function findNestedItems(entireObj: Statement[], valToFind: unknown) {
+  const foundObj: any[] = []
+  JSON.stringify(entireObj, (_, nestedValue) => {
+    const found = nestedValue && nestedValue.type === valToFind
+    found && foundObj.push(nestedValue)
+    return nestedValue
+  })
+  return foundObj
+}
+
+function TSImportType(parsed: Statement[]) {
+  return findNestedItems(parsed, 'TSImportType')
     .filter((node) => isOkString(node.argument))
     .map((node) => parseString(node.argument))
 }
 
-const ImportDeclaration_ExportNamedDeclaration_ExportAllDeclaration = (
+function ImportDeclaration_ExportNamedDeclaration_ExportAllDeclaration(
   parsed: Statement[]
-) => {
+) {
   return [
-    findNestedItems(parsed, 'type', 'ImportDeclaration'),
-    findNestedItems(parsed, 'type', 'ExportDeclaration'),
-    findNestedItems(parsed, 'type', 'ExportNamedDeclaration'),
-    findNestedItems(parsed, 'type', 'ExportAllDeclaration'),
+    findNestedItems(parsed, 'ImportDeclaration'),
+    findNestedItems(parsed, 'ExportDeclaration'),
+    findNestedItems(parsed, 'ExportNamedDeclaration'),
+    findNestedItems(parsed, 'ExportAllDeclaration'),
   ]
     .flat()
     .filter((node) => isOkString(node.source))
     .map((node) => parseString(node.source))
 }
 
-const CallExpressionImport = (parsed: Statement[]) => {
-  return findNestedItems(parsed, 'type', 'CallExpression')
+function CallExpressionImport(parsed: Statement[]) {
+  return findNestedItems(parsed, 'CallExpression')
     .filter(
       (node) =>
         node &&
@@ -33,8 +56,8 @@ const CallExpressionImport = (parsed: Statement[]) => {
     .map((node) => parseString(node.arguments[0]))
 }
 
-const CallExpressionRequire = (parsed: Statement[]) => {
-  return findNestedItems(parsed, 'type', 'CallExpression')
+function CallExpressionRequire(parsed: Statement[]) {
+  return findNestedItems(parsed, 'CallExpression')
     .filter(
       (node) =>
         node &&
@@ -48,8 +71,8 @@ const CallExpressionRequire = (parsed: Statement[]) => {
 
 export function getImports(parsed: Statement[]) {
   return [
-    ...CallExpressionImport(parsed),
     ...TSImportType(parsed),
+    ...CallExpressionImport(parsed),
     ...ImportDeclaration_ExportNamedDeclaration_ExportAllDeclaration(parsed),
   ]
 }

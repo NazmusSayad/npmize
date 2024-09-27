@@ -1,9 +1,7 @@
 const varName =
   '_____VGhpcyBuYW1lIGlzIHVzZWQgdG8gZW5hYmxlIF9fZGlybmFtZSBhbmQgX19maWxlbmFtZSDwn5iK_____'
 
-export default (filePath: string, fileContent: string) => {
-  if (filePath.endsWith('ts')) return ''
-
+export default function (fileContent: string) {
   const isFilenameExist = fileContent.includes('__filename')
   const isDirnameExist = fileContent.includes('__dirname')
   if (!isFilenameExist && !isDirnameExist) return ''
