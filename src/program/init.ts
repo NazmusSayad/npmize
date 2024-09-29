@@ -20,6 +20,7 @@ export default function (basePath: string, options: InitOptions) {
     data.scripts ??= {}
     data.scripts.dev = 'npmize dev'
     data.scripts.build = 'npmize build'
+    data.scripts.start = 'run ./src/index.ts'
 
     delete data.main
     delete data.module
@@ -32,7 +33,7 @@ export default function (basePath: string, options: InitOptions) {
   }
 
   if (options.installPackages) {
-    crossSpawn.sync('npm', ['install', '--save-dev', 'typescript', 'ts-node'], {
+    crossSpawn.sync('npm', ['install', '--save-dev', 'npmize', 'typescript'], {
       cwd: basePath,
       stdio: 'inherit',
     })
