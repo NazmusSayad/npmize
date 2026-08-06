@@ -1,3 +1,5 @@
+> Use `npm create src npm` instead of this
+
 # npmize
 
 This package simplifies creating npm packages that work seamlessly across browsers and Node.js environments by handling CommonJS (CJS) and ES modules (ESM) for you.
